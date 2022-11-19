@@ -1,0 +1,89 @@
+.weekContainer {
+    background-image: linear-gradient(180deg, #6c648b, #b6a19e);
+}
+
+.modalHeader {
+    display: flex;
+    width: 90vw;
+    margin-top: 0rem;
+    margin-bottom: 0.5rem;
+    justify-content: space-between;
+}
+
+.dayContainer {
+    margin: 1rem;
+    height: 100%;
+    border-right: 0.1rem solid #6bbaa7;
+    padding: 0.5rem;
+    flex: 1;
+}
+
+.dayContainer > h4 {
+    color: whitesmoke;
+    margin-bottom: 2rem;
+}
+
+.meal {
+    flex: 1;
+    height: 15rem;
+}
+
+.weekContainer {
+    display: flex;
+    overflow-wrap: break-word;
+    height: fit-content;
+}
+
+.recipeContainer {
+    display: flex;
+    width: 10rem;
+    height: 10rem;
+    margin: 0.5rem;
+    overflow-wrap: break-word;
+}
+
+.menuContainer {
+    display: inline-flex;
+    flex-wrap: wrap;
+    width: 90vw;
+    height: auto;
+    overflow-wrap: break-word;
+    justify-content: center;
+    /* margin: 1rem; */
+}
+
+.closeButton {
+    width: 2rem;
+    height: 1.2rem;
+    align-self: center;
+}
+
+.headerContainer {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    height: 5rem;
+    margin-bottom: 1rem;
+}
+
+.headerContainer > h1 {
+    justify-self: center;
+    color: #6c64bb;
+    align-self: center;
+}
+
+Modal {
+    /* max-height: calc(95vh - 225px);
+    max-width: calc(95vw - 225px); */
+    /* justify-content: "center"; */
+    /* flex-wrap: wrap; */
+    /* overflow-wrap: wrap; */
+    /* margin: 2rem; */
+}
+
+/* .modalContainer {
+    height: 100%;
+    justify-content: "center";
+    flex-wrap: wrap;
+    overflow-wrap: wrap;
+} */
