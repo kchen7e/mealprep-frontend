@@ -1,7 +1,6 @@
 import React from "react";
 import Day from "./Day";
 import {Button, Icon} from "semantic-ui-react";
-import {portalClassName} from "react-modal/lib/components/Modal";
 
 function Week() {
     const selectedRecipe = {
