@@ -1,7 +1,7 @@
 import React from "react";
-import Breakfast from "./Breakfast";
-import Lunch from "./Lunch";
-import Dinner from "./Dinner";
+import Breakfast from "../Meal/Breakfast";
+import Lunch from "../Meal/Lunch";
+import Dinner from "../Meal/Dinner";
 
 function Day(props) {
     return (

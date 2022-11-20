@@ -1,5 +1,6 @@
 import React from "react";
 import Day from "./Day";
+import Account from "../Account/Account";
 import {Button, Icon} from "semantic-ui-react";
 
 function Week() {
@@ -20,10 +21,7 @@ function Week() {
     return (
         <>
             <div className="headerContainer">
-                <Button basic color="white" onClick={displayAccount}>
-                    <Icon name="home" size="large" />
-                    My Account
-                </Button>
+                <Account />
                 <h1>Meal Prep for this Week</h1>
                 <Button
                     basic

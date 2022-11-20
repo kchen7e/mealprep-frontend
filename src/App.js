@@ -1,6 +1,5 @@
 import React from "react";
-import Week from "./components/Week";
-// import {Button, Icon} from "semantic-ui-react";
+import Week from "./components/Calendar/Week";
 import "./styles/App.css";
 
 function App() {

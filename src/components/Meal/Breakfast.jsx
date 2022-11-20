@@ -1,6 +1,6 @@
 import React from "react";
 import {useState} from "react";
-import BreakfastMenu from "./BreakfastMenu";
+import BreakfastMenu from "../Menu/BreakfastMenu";
 
 function Breakfast(props) {
     const [currentRecipe, setRecipe] = useState("");

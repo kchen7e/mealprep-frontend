@@ -1,6 +1,6 @@
 import React from "react";
 import {useState} from "react";
-import LunchMenu from "./LunchMenu";
+import LunchMenu from "../Menu/LunchMenu";
 
 function Lunch(props) {
     const [currentRecipe, setRecipe] = useState("");

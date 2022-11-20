@@ -4,10 +4,13 @@
 
 .modalHeader {
     display: flex;
-    width: 90vw;
+    /* width: 90vw; */
     margin-top: 0rem;
     margin-bottom: 0.5rem;
     justify-content: space-between;
+}
+
+.modalHeader > h2 {
 }
 
 .dayContainer {
@@ -40,6 +43,18 @@
     height: 10rem;
     margin: 0.5rem;
     overflow-wrap: break-word;
+    transition: width 1s;
+    flex: 1 1 0%;
+    flex-basis: 0%;
+}
+
+.recipeDescription {
+    display: none;
+}
+
+.recipeContainer:hover {
+    border: thin black solid;
+    flex-basis: 50%;
 }
 
 .menuContainer {
@@ -79,6 +94,15 @@ Modal {
     /* flex-wrap: wrap; */
     /* overflow-wrap: wrap; */
     /* margin: 2rem; */
+}
+
+i[class~="close"] {
+    transition: transform 0.4s ease-in-out;
+}
+
+i[class~="close"]:hover {
+    cursor: pointer;
+    transform: rotate(90deg);
 }
 
 /* .modalContainer {
