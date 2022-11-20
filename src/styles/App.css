@@ -1,3 +1,7 @@
+* {
+    scrollbar-gutter: stable both-edges;
+}
+
 .weekContainer {
     background-image: linear-gradient(180deg, #6c648b, #b6a19e);
 }
@@ -67,6 +71,12 @@
     /* margin: 1rem; */
 }
 
+.ui.form input[type="text"][readonly],
+.ui.form input[type="password"][readonly] {
+    background-color: #7e7e7e;
+    color: white;
+}
+
 .closeButton {
     width: 2rem;
     height: 1.2rem;
@@ -87,15 +97,6 @@
     align-self: center;
 }
 
-Modal {
-    /* max-height: calc(95vh - 225px);
-    max-width: calc(95vw - 225px); */
-    /* justify-content: "center"; */
-    /* flex-wrap: wrap; */
-    /* overflow-wrap: wrap; */
-    /* margin: 2rem; */
-}
-
 i[class~="close"] {
     transition: transform 0.4s ease-in-out;
 }
@@ -104,10 +105,3 @@ i[class~="close"]:hover {
     cursor: pointer;
     transform: rotate(90deg);
 }
-
-/* .modalContainer {
-    height: 100%;
-    justify-content: "center";
-    flex-wrap: wrap;
-    overflow-wrap: wrap;
-} */

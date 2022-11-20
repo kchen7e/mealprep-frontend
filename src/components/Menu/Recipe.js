@@ -11,7 +11,7 @@ function Recipe(props) {
             <div className="recipeBrief">
                 <button onClick={handleClick}>button</button>
                 recipe name
-                <img alt="recipe image"></img>
+                <img alt="recipe"></img>
             </div>
             <div className="recipeDescription">description</div>
         </div>

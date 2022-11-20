@@ -14,9 +14,9 @@ function Week() {
         6: {breakfast: "", lunch: "", dinner: ""},
     };
 
-    function displayAccount() {}
-
-    function getShoppingList() {}
+    function getShoppingList() {
+        console.log("shopping list");
+    }
 
     return (
         <>
@@ -25,7 +25,7 @@ function Week() {
                 <h1>Meal Prep for this Week</h1>
                 <Button
                     basic
-                    color="white"
+                    // color="white"
                     onClick={getShoppingList}
                     style={{marginLeft: 20}}
                 >
@@ -36,7 +36,11 @@ function Week() {
             <div className="weekContainer">
                 {[...Array(7)].map((_, i) => {
                     return (
-                        <Day day={i + 1} selectedRecipe={selectedRecipe[i]} />
+                        <Day
+                            key={i}
+                            day={i + 1}
+                            selectedRecipe={selectedRecipe[i]}
+                        />
                     );
                 })}
             </div>
