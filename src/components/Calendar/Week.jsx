@@ -1,21 +1,23 @@
-import React from "react";
+import React, {useRef} from "react";
 import Day from "./Day";
 import Account from "../Account/Account";
 import {Button, Icon} from "semantic-ui-react";
 
-function Week() {
-    const selectedRecipe = {
-        0: {breakfast: "", lunch: "", dinner: ""},
-        1: {breakfast: "", lunch: "", dinner: ""},
-        2: {breakfast: "", lunch: "", dinner: ""},
-        3: {breakfast: "", lunch: "", dinner: ""},
-        4: {breakfast: "", lunch: "", dinner: ""},
-        5: {breakfast: "", lunch: "", dinner: ""},
-        6: {breakfast: "", lunch: "", dinner: ""},
+function Week(props) {
+    const initialStatus = {
+        0: {breakfast: [], lunch: [], dinner: []},
+        1: {breakfast: [], lunch: [], dinner: []},
+        2: {breakfast: [], lunch: [], dinner: []},
+        3: {breakfast: [], lunch: [], dinner: []},
+        4: {breakfast: [], lunch: [], dinner: []},
+        5: {breakfast: [], lunch: [], dinner: []},
+        6: {breakfast: [], lunch: [], dinner: []},
     };
 
+    const selectedRecipe = useRef(initialStatus);
+
     function getShoppingList() {
-        console.log("shopping list");
+        console.log("submitting", selectedRecipe.current);
     }
 
     return (
@@ -27,8 +29,7 @@ function Week() {
                     basic
                     // color="white"
                     onClick={getShoppingList}
-                    style={{marginLeft: 20}}
-                >
+                    style={{marginLeft: 20}}>
                     <Icon name="shopping cart" size="large" />
                     Get Shopping List
                 </Button>
@@ -39,7 +40,8 @@ function Week() {
                         <Day
                             key={i}
                             day={i + 1}
-                            selectedRecipe={selectedRecipe[i]}
+                            selectedRecipe={selectedRecipe.current[i]}
+                            recipes={props.recipes}
                         />
                     );
                 })}

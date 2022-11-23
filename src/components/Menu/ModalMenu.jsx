@@ -1,10 +1,15 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "react-modal";
 import {Button, Icon} from "semantic-ui-react";
 
 function ModalMenu({modalButton, renderers}) {
     Modal.setAppElement("#root");
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [finishLoadingMenu, setfinishLoadingMenu] = useState(false);
+
+    useEffect(() => {
+        setfinishLoadingMenu(!finishLoadingMenu);
+    }, []);
 
     function openModal() {
         setIsOpen(true);
@@ -20,16 +25,18 @@ function ModalMenu({modalButton, renderers}) {
     }
     return (
         <>
-            <Button color={modalButton.colour} onClick={openModal}>
+            <Button
+                color={modalButton.colour}
+                onClick={openModal}
+                className={finishLoadingMenu ? "" : "disabled"}>
                 {modalButton.content}
             </Button>
             <Modal
                 isOpen={modalIsOpen}
                 onAfterOpen={afterOpenModal}
                 onRequestClose={closeModal}
-                contentLabel="Menu"
-            >
-                <div class="modalContainer">
+                contentLabel="Menu">
+                <div className="modalContainer">
                     <div className="modalHeader">
                         <Icon name="close" size="large" onClick={closeModal} />
                         {renderers.header()}

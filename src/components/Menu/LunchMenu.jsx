@@ -24,10 +24,15 @@ function LunchMenu(props) {
 
     function renderBody() {
         const menu = [];
-        for (let i = 0; i < 50; i++) {
-            menu.push(<Recipe key={i} />);
+        for (const recipe of props.recipes) {
+            menu.push(
+                <Recipe
+                    key={recipe.recipeName}
+                    recipe={recipe}
+                    selectedRecipe={props.selectedRecipe}
+                />
+            );
         }
-
         const menuWrap = <div className="menuContainer">{menu}</div>;
         return menuWrap;
     }

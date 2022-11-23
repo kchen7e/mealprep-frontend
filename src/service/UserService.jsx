@@ -1,18 +1,33 @@
 import {downloadUser, updateUser} from "./BackendAPI";
-import {UserInfo} from "../static/static";
 import _ from "lodash";
 
-export async function getUserInfo(userName, token) {
-    try {
-        downloadUser(userName).then((data) => {
-            const noNullData = _.mapValues(data, (v) => (v === null ? "" : v));
-            return noNullData;
+export function getUserInfo(userName, token) {
+    const result = downloadUser(userName)
+        .then((response) => {
+            if (response.data) {
+                const noNullData = _.mapValues(response.data, (v) =>
+                    v === null ? "" : v
+                );
+                return noNullData;
+            } else {
+                return null;
+            }
+        })
+        .catch((err) => {
+            console.log(err.message);
+            throw err;
         });
-    } catch (err) {
-        alert(err.message);
-    }
+    return result;
 }
 
-export async function updateUserInfo(userInfo) {
-    return updateUser(JSON.stringify(userInfo));
+export function updateUserInfo(updatedUserInfo) {
+    const result = updateUser(updatedUserInfo)
+        .then((response) => {
+            return response.data;
+        })
+        .catch((err) => {
+            console.log(err.message);
+            throw err;
+        });
+    return result;
 }

@@ -1,53 +1,83 @@
 import React, {useEffect, useState, useRef} from "react";
 import Modal from "react-modal";
 import _ from "lodash";
-import {Button, Icon} from "semantic-ui-react";
+import {Button, Icon, Dropdown} from "semantic-ui-react";
 import {getUserInfo, updateUserInfo} from "../../service/UserService";
-import CountryDropDown from "./CountryDropDown";
 import {UserInfo} from "../../static/static";
-import {isFocusable} from "@testing-library/user-event/dist/utils";
-import {hide} from "react-modal/lib/helpers/ariaAppHider";
+import {CountryOptions} from "../../static/static";
+import Cookies from "js-cookie";
 
 function Account() {
-    const [userInfo, setUserInfo] = useState({...UserInfo});
+    const userInfo = useRef({...UserInfo});
+    Modal.setAppElement("#root");
+    var userName = Cookies.get("userName");
     const [userInfoUpdated, setuserInfoUpdated] = useState({...UserInfo});
-    const [saveButtonStatus, setsaveButtonStatus] = useState("disabled");
+    const [modalIsOpen, setIsOpen] = useState(false);
+    const [isOnHold, setIsOnHold] = useState(false);
 
     useEffect(() => {
-        getUserInfo("kevin", "").then((info) => {
-            console.log(info);
-            setUserInfo((userInfo) => ({
-                ...userInfo,
-                id: info.id,
-                userName: info.userName,
-                firstName: info.firstName,
-                lastName: info.lastName,
-                email: info.email,
-            }));
-            setuserInfoUpdated((userInfoUpdated) => ({
-                ...userInfoUpdated,
-                id: info.id,
-                userName: info.userName,
-                firstName: info.firstName,
-                lastName: info.lastName,
-                email: info.email,
-            }));
-        });
+        if (!userName && userInfo.current.id) {
+            Cookies.set("userName", "kchen8e");
+            userInfo.current.userName = Cookies.get("userName");
+        }
+        fillUserInfo(userName, userInfo.current);
     }, []);
 
+    const fillUserInfo = (userName, userInfo) => {
+        getUserInfo(userName, "")
+            .then((info) => {
+                if (info) {
+                    Object.keys(userInfo).forEach((key) => {
+                        userInfo[key] = info[key];
+                    });
+                    setuserInfoUpdated((userInfoUpdated) => ({
+                        ...userInfoUpdated,
+                        id: info.id,
+                        userName: info.userName,
+                        firstName: info.firstName,
+                        lastName: info.lastName,
+                        email: info.email,
+                    }));
+                }
+            })
+            .catch((err) => {
+                alert("backend offline");
+            });
+    };
+
+    const CountryDropDown = () => (
+        <Dropdown
+            name="country"
+            clearable
+            fluid
+            search
+            selection
+            options={CountryOptions}
+            placeholder="Select Country"
+            onChange={handleCountryChange}
+            // defaultValue={userInfo.current.country}
+            value={
+                userInfoUpdated.country &&
+                !_.isEqual(userInfo.current.country, userInfoUpdated.country)
+                    ? userInfoUpdated.country
+                    : userInfo.current.country
+            }
+        />
+    );
+
     function saveUserInfo() {
-        if (updateUserInfo(userInfoUpdated)) {
-            setUserInfo((userInfo) => ({
-                ...userInfo,
-                id: userInfoUpdated.id,
-                userName: userInfoUpdated.userName,
-                firstName: userInfoUpdated.firstName,
-                lastName: userInfoUpdated.lastName,
-                email: userInfoUpdated.email,
-            }));
-            setsaveButtonStatus("disabled");
-        }
-        alert("update failed");
+        setIsOnHold(true);
+        updateUserInfo(userInfoUpdated)
+            .then((result) => {
+                setIsOnHold(false);
+                Object.keys(userInfo.current).forEach((key) => {
+                    userInfo.current[key] = userInfoUpdated[key];
+                });
+            })
+            .catch((error) => {
+                setIsOnHold(false);
+                alert("backend offline, save failed");
+            });
     }
 
     function onTextInputChange(event) {
@@ -77,12 +107,14 @@ function Account() {
                 ...userInfoUpdated,
                 password: event.target.value,
             }));
-        } else if (event.target.name === "country") {
-            setuserInfoUpdated((userInfoUpdated) => ({
-                ...userInfoUpdated,
-                country: event.target.value,
-            }));
         }
+    }
+
+    function handleCountryChange(event, data) {
+        setuserInfoUpdated((userInfoUpdated) => ({
+            ...userInfoUpdated,
+            country: data.value,
+        }));
     }
 
     function onTextInputFocus(event) {
@@ -99,18 +131,21 @@ function Account() {
         return (
             <>
                 <div className="ui buttons">
-                    <button className="ui button" onClick={closeModal}>
+                    <button
+                        ref={(ref) => {}}
+                        className="ui button"
+                        onClick={closeModal}>
                         Exit
                     </button>
                     <div className="or"></div>
                     <button
+                        ref={(ref) => {}}
                         className={
-                            _.isEqual(userInfo, userInfoUpdated)
+                            _.isEqual(userInfo.current, userInfoUpdated)
                                 ? "ui positive button disabled"
                                 : "ui positive button active"
                         }
-                        onClick={saveUserInfo}
-                    >
+                        onClick={saveUserInfo}>
                         Save
                     </button>
                 </div>
@@ -223,6 +258,7 @@ function Account() {
     function renderFooter() {
         return (
             <Button
+                ref={(ref) => {}}
                 basic
                 // color="white"
             >
@@ -233,29 +269,30 @@ function Account() {
         );
     }
 
-    Modal.setAppElement("#root");
-    const [modalIsOpen, setIsOpen] = useState(false);
-
     function openModal() {
-        // getUserInfo("kevin", "").then((info) => {
-        //     setUserInfo((userInfo) => ({
-        //         ...userInfo,
-        //         id: info.id,
-        //         userName: info.userName,
-        //         firstName: info.firstName,
-        //         lastName: info.lastName,
-        //         email: info.email,
-        //     }));
-        //     setuserInfoUpdated((userInfoUpdated) => ({
-        //         ...userInfoUpdated,
-        //         id: info.id,
-        //         userName: info.userName,
-        //         firstName: info.firstName,
-        //         lastName: info.lastName,
-        //         email: info.email,
-        //     }));
-        // });
-        setIsOpen(true);
+        if (!userInfo.current.id) {
+            fillUserInfo(Cookies.get("userName"), userInfo.current);
+            setuserInfoUpdated((userInfoUpdated) => ({
+                ...userInfoUpdated,
+                id: userInfo.current.id,
+                userName: userInfo.current.userName,
+                firstName: userInfo.current.firstName,
+                lastName: userInfo.current.lastName,
+                email: userInfo.current.email,
+            }));
+        }
+        if (!userInfo.current.userName) {
+            alert("registration page");
+        } else {
+            setuserInfoUpdated((userInfoUpdated) => ({
+                ...userInfoUpdated,
+                userName: userInfo.current.userName,
+                firstName: userInfo.current.firstName,
+                lastName: userInfo.current.lastName,
+                email: userInfo.current.email,
+            }));
+            setIsOpen(true);
+        }
     }
 
     function afterOpenModal() {
@@ -265,24 +302,17 @@ function Account() {
 
     function closeModal() {
         setIsOpen(false);
-        getUserInfo("kevin", "").then((info) => {
-            setUserInfo((userInfo) => ({
-                ...userInfo,
-                id: info.id,
-                userName: info.userName,
-                firstName: info.firstName,
-                lastName: info.lastName,
-                email: info.email,
-            }));
+        if (!_.isEqual(userInfo.current.country, userInfoUpdated.country)) {
             setuserInfoUpdated((userInfoUpdated) => ({
                 ...userInfoUpdated,
-                id: info.id,
-                userName: info.userName,
-                firstName: info.firstName,
-                lastName: info.lastName,
-                email: info.email,
+                id: userInfo.current.id,
+                userName: userInfo.current.userName,
+                firstName: userInfo.current.firstName,
+                lastName: userInfo.current.lastName,
+                email: userInfo.current.email,
+                country: userInfo.current.country,
             }));
-        });
+        }
     }
 
     return (
@@ -290,25 +320,27 @@ function Account() {
             <Button
                 basic
                 // color="white"
-                onClick={openModal}
-            >
+                ref={(ref) => {}}
+                onClick={openModal}>
                 <Icon name="home" size="large" />
                 My Account
             </Button>
             <Modal
                 isOpen={modalIsOpen}
                 onAfterOpen={afterOpenModal}
+                shouldCloseOnOverlayClick={true}
+                shouldCloseOnEsc={true}
                 onRequestClose={closeModal}
-                shouldCloseOnOverlayClick={closeModal}
-                shouldCloseOnEsc={closeModal}
-                contentLabel="my account"
-            >
+                contentLabel="my account">
                 <div className="modalContainer">
                     <div className="modalHeader">{renderHeader()}</div>
                     <div className="modalBody">{renderBody()}</div>
                     <div className="modalFooter">{renderFooter()}</div>
                 </div>
             </Modal>
+            <div
+                className="overlay"
+                style={{display: isOnHold ? "block" : "none"}}></div>
         </>
     );
 }

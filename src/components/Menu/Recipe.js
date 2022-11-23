@@ -1,19 +1,41 @@
-import React, {useState} from "react";
+import React, {useState, useRef} from "react";
 
 function Recipe(props) {
-    const [selected, setStatus] = useState(false);
+    let initialStatus = props.selectedRecipe.includes(props.recipe.recipeName)
+        ? true
+        : false;
 
-    function handleClick() {
+    const [selected, setStatus] = useState(initialStatus);
+
+    function handleClick(event) {
+        if (selected) {
+            const index = props.selectedRecipe.indexOf(
+                event.target.nextSibling.data
+            );
+            if (index > -1) {
+                props.selectedRecipe.splice(index, 1);
+            }
+        } else {
+            props.selectedRecipe.push(event.target.nextSibling.data);
+        }
         setStatus(!selected);
     }
+
     return (
-        <div className="recipeContainer">
+        <div
+            className={
+                selected ? "recipeContainer selected" : "recipeContainer"
+            }>
             <div className="recipeBrief">
-                <button onClick={handleClick}>button</button>
-                recipe name
-                <img alt="recipe"></img>
+                <input
+                    onClick={handleClick}
+                    type="button"
+                    value={selected ? "✓" : "+"}
+                />
+                {/* <img alt="recipe"></img> */}
+                {props.recipe.recipeName}
             </div>
-            <div className="recipeDescription">description</div>
+            <div className="recipeDescription">{props.recipe.recipeName}</div>
         </div>
     );
 }
