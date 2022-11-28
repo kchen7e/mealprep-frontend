@@ -10,6 +10,24 @@ export const UserInfo = {
     country: "",
 };
 
+const breakfastRecipes = [];
+const lunchRecipes = [];
+const dinnerRecipes = [];
+const snacksRecipes = [];
+const dessertRecipes = [];
+const recipes = {
+    breakfast: breakfastRecipes,
+    lunch: lunchRecipes,
+    dinner: dinnerRecipes,
+    snacks: snacksRecipes,
+    dessert: dessertRecipes,
+};
+
+export const defaultRecipeData = {
+    data: recipes,
+    lastRetrieval: "",
+};
+
 export const CountryOptions = [
     {key: "af", value: "af", flag: "af", text: "Afghanistan"},
     {key: "ax", value: "ax", flag: "ax", text: "Aland Islands"},

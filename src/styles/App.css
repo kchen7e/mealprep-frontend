@@ -14,9 +14,6 @@
     justify-content: space-between;
 }
 
-.modalHeader > h2 {
-}
-
 .dayContainer {
     margin: 1rem;
     height: 100%;
@@ -42,28 +39,32 @@
 }
 
 .recipeContainer {
-    display: flex;
-    width: 10rem;
-    height: 10rem;
+    display: block;
+    width: 20rem;
+    min-width: 20rem;
+    max-width: 20rem;
+    max-height: 20rem;
+    min-height: 20rem;
+    height: 20rem;
     margin: 0.5rem;
     overflow-wrap: break-word;
-    transition: width 1s;
-    flex: 1 1 0%;
-    flex-basis: 0%;
     position: relative;
     border-width: 0.1rem;
     border-style: dotted;
+    cursor: pointer;
 }
 
 .recipeContainer.selected {
-    display: flex;
-    width: 10rem;
-    height: 10rem;
-    margin: 0.3rem;
+    display: block;
+    width: 20rem;
+    min-width: 20rem;
+    max-width: 20rem;
+    max-height: 20rem;
+    min-height: 20rem;
+    height: 20rem;
+    margin: 0.5rem;
     overflow-wrap: break-word;
-    transition: width 1s;
-    flex: 1 1 0%;
-    flex-basis: 0%;
+    /* transition: width 1s; */
     position: relative;
     border-width: 0.3rem;
     border-style: dotted;
@@ -72,22 +73,28 @@
 
 .recipeBrief {
     display: flex;
-    width: 10rem;
-    height: 10rem;
     margin: 0.5rem;
     overflow-wrap: break-word;
     transition: width 1s;
-    flex: 1 1 0%;
-    flex-basis: 0%;
+    justify-content: space-between;
 }
 
-.recipeBrief > input {
+.recipeBrief > img {
+    height: 14rem;
+    width: 14rem;
+}
+
+.recipeBrief > button {
     height: 1.5rem;
     width: 1.5rem;
 }
 
+.recipeContainer > p {
+    font-size: 1.3rem;
+}
+
 .recipeDescription {
-    display: none;
+    display: flex;
 }
 
 /* .recipeContainer:hover {
@@ -153,4 +160,20 @@ i[class~="close"] {
 i[class~="close"]:hover {
     cursor: pointer;
     transform: rotate(90deg);
+}
+
+.modalContainer {
+    min-height: 100%;
+}
+
+.shoppingListContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 5rem;
+    margin-right: 5rem;
+    min-height: 100%;
+}
+
+.shoppingListContainer > * {
+    min-height: 100%;
 }

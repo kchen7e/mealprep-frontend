@@ -16,8 +16,11 @@ function Account() {
     const [isOnHold, setIsOnHold] = useState(false);
 
     useEffect(() => {
-        if (!userName && userInfo.current.id) {
-            Cookies.set("userName", "kchen8e");
+        console.log("username is ", userName);
+        console.log("userinfo current is ", userInfo.current);
+        if (!userName || userInfo.current.userName) {
+            console.log("set cookie");
+            Cookies.set("userName", "Amy");
             userInfo.current.userName = Cookies.get("userName");
         }
         fillUserInfo(userName, userInfo.current);
@@ -270,7 +273,8 @@ function Account() {
     }
 
     function openModal() {
-        if (!userInfo.current.id) {
+        console.log(userInfo);
+        if (!userInfo.current.userName) {
             fillUserInfo(Cookies.get("userName"), userInfo.current);
             setuserInfoUpdated((userInfoUpdated) => ({
                 ...userInfoUpdated,

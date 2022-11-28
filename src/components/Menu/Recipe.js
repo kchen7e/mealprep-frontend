@@ -1,4 +1,5 @@
-import React, {useState, useRef} from "react";
+import React, {useState} from "react";
+import meal from "../../static/meal.jpg";
 
 function Recipe(props) {
     let initialStatus = props.selectedRecipe.includes(props.recipe.recipeName)
@@ -6,17 +7,18 @@ function Recipe(props) {
         : false;
 
     const [selected, setStatus] = useState(initialStatus);
+    var recipeNameLocator = null;
 
-    function handleClick(event) {
+    function handleClick() {
         if (selected) {
             const index = props.selectedRecipe.indexOf(
-                event.target.nextSibling.data
+                recipeNameLocator.getAttribute("data")
             );
             if (index > -1) {
                 props.selectedRecipe.splice(index, 1);
             }
         } else {
-            props.selectedRecipe.push(event.target.nextSibling.data);
+            props.selectedRecipe.push(recipeNameLocator.getAttribute("data"));
         }
         setStatus(!selected);
     }
@@ -25,17 +27,17 @@ function Recipe(props) {
         <div
             className={
                 selected ? "recipeContainer selected" : "recipeContainer"
-            }>
+            }
+            onClick={handleClick}>
             <div className="recipeBrief">
-                <input
-                    onClick={handleClick}
-                    type="button"
-                    value={selected ? "✓" : "+"}
-                />
-                {/* <img alt="recipe"></img> */}
-                {props.recipe.recipeName}
+                <img alt="recipe" src={meal}></img>
+                <button type="button">{selected ? "✓" : "+"}</button>
             </div>
-            <div className="recipeDescription">{props.recipe.recipeName}</div>
+            <p
+                ref={(ref) => (recipeNameLocator = ref)}
+                data={props.recipe.recipeName}>
+                {props.recipe.displayName}
+            </p>
         </div>
     );
 }

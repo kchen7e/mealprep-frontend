@@ -3,9 +3,9 @@ import _ from "lodash";
 
 export function getUserInfo(userName, token) {
     const result = downloadUser(userName)
-        .then((response) => {
-            if (response.data) {
-                const noNullData = _.mapValues(response.data, (v) =>
+        .then((userData) => {
+            if (userData) {
+                const noNullData = _.mapValues(userData, (v) =>
                     v === null ? "" : v
                 );
                 return noNullData;

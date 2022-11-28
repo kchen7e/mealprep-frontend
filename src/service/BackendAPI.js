@@ -1,66 +1,22 @@
 import axios from "axios";
 
-export function downloadRecipes() {
-    const breakfastRecipes = [];
-    const lunchRecipes = [];
-    const dinnerRecipes = [];
-    const supperRecipes = [];
-    const dessertRecipes = [];
-    const recipes = {
-        breakfast: breakfastRecipes,
-        lunch: lunchRecipes,
-        dinner: dinnerRecipes,
-        supper: supperRecipes,
-        dessert: dessertRecipes,
-    };
+const URL = "localhost";
 
-    axios({
+export async function downloadRecipes() {
+    return axios({
         method: "get",
-        url: "http://localhost:8080/api/recipe/get/all",
+        url: `http://${URL}:8080/api/recipe/get/all/`,
         responseType: "json",
     })
         .then((response) => {
-            response.data.forEach((recipe) => {
-                if (recipe.mealType.includes("BREAKFAST")) {
-                    breakfastRecipes.push(recipe);
-                }
-                if (recipe.mealType.includes("LUNCH")) {
-                    lunchRecipes.push(recipe);
-                }
-                if (recipe.mealType.includes("DINNER")) {
-                    dinnerRecipes.push(recipe);
-                }
-                if (recipe.mealType.includes("SUPPER")) {
-                    supperRecipes.push(recipe);
-                }
-                if (recipe.mealType.includes("DESSERT")) {
-                    dessertRecipes.push(recipe);
-                }
-                if (!recipe.mealType) {
-                    dinnerRecipes.push(recipe);
-                }
-            });
+            return response;
         })
         .catch((error) => {
             throw error;
         });
-
-    // fetch("localhost:8080/api/recipes/get").then((data) => {
-    //     data.forEach((element) => {
-    //         const recipe = element.json;
-    //         if (recipe.category === "breakfast") {
-    //             breakfastRecipes.push(recipe);
-    //         } else if (recipe.category === "lunch") {
-    //             lunchRecipes.push(recipe);
-    //         } else if (recipe.category === "dinner") {
-    //             dinnerRecipes.push(recipe);
-    //         }
-    //     });
-    // });
-    return recipes;
 }
 
-export function downloadMyRecipes(userName, token) {
+export async function downloadMyRecipes(userName, token) {
     const breakfastRecipes = [];
     const lunchRecipes = [];
     const dinnerRecipes = [];
@@ -72,17 +28,17 @@ export function downloadMyRecipes(userName, token) {
 
     axios({
         method: "get",
-        url: "localhost:8080/api/recipes/get",
+        url: `http://${URL}:8080/api/recipe/get/all`,
         responseType: "json",
     })
         .then((data) => {
             data.forEach((element) => {
                 const recipe = element.json;
-                if (recipe.category === "breakfast") {
+                if (recipe.mealType === "breakfast") {
                     breakfastRecipes.push(recipe);
-                } else if (recipe.category === "lunch") {
+                } else if (recipe.mealType === "lunch") {
                     lunchRecipes.push(recipe);
-                } else if (recipe.category === "dinner") {
+                } else {
                     dinnerRecipes.push(recipe);
                 }
             });
@@ -112,30 +68,53 @@ export function downloadMyRecipes(userName, token) {
     return recipes;
 }
 
-export function downloadUser(userName) {
-    return axios.post("http://localhost:8080/api/user/get", {
-        userName: userName,
-    });
+export async function downloadUser(userName) {
+    console.log("download user", userName);
+    return axios
+        .post(
+            `http://${URL}:8080/api/user/get`,
+            {
+                userName: userName,
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        )
+        .then((response) => {
+            if (response.status === 200) {
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 }
 
-export function getShoppingList() {
-    const breakfastRecipes = [];
-    const lunchRecipes = [];
-    const dinnerRecipes = [];
-    const recipes = {
-        breakfast: breakfastRecipes,
-        lunch: lunchRecipes,
-        dinner: dinnerRecipes,
-    };
-
-    return recipes;
+export async function queryShoppingList(list) {
+    // console.log(list);
+    return axios({
+        method: "post",
+        url: `http://${URL}:8080/api/shopping/get`,
+        responseType: "json",
+        data: list,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.status === 200) {
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            throw error;
+        });
 }
 
 export function updateUser(userInfoUpdated) {
-    return axios.patch(
-        "http://localhost:8080/api/user/update",
-        userInfoUpdated
-    );
+    return axios.patch(`http://${URL}:8080/api/user/update/`, userInfoUpdated);
     // const result = await fetch("http://localhost:8080/api/user/update", {
     //     method: "PATCH",
     //     headers: {

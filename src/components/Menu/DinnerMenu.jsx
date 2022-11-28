@@ -17,6 +17,7 @@ function DinnerMenu(props) {
     function renderHeader() {
         return (
             <>
+                <h2>Day {props.day}</h2>
                 <h2>Dinner Menu</h2>
             </>
         );
@@ -24,17 +25,19 @@ function DinnerMenu(props) {
 
     function renderBody() {
         const menu = [];
-        for (const recipe of props.recipes) {
-            menu.push(
-                <Recipe
-                    key={recipe.recipeName}
-                    recipe={recipe}
-                    selectedRecipe={props.selectedRecipe}
-                />
-            );
+        if (props.recipes) {
+            for (const recipe of props.recipes) {
+                menu.push(
+                    <Recipe
+                        key={recipe.recipeName}
+                        recipe={recipe}
+                        selectedRecipe={props.selectedRecipe}
+                    />
+                );
+            }
+            const menuWrap = <div className="menuContainer">{menu}</div>;
+            return menuWrap;
         }
-        const menuWrap = <div className="menuContainer">{menu}</div>;
-        return menuWrap;
     }
 
     function renderFooter() {}

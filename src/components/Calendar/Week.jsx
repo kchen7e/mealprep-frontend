@@ -1,10 +1,14 @@
-import React, {useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
+import {Button, Icon} from "semantic-ui-react";
 import Day from "./Day";
 import Account from "../Account/Account";
-import {Button, Icon} from "semantic-ui-react";
+import ModalShoppingList from "../../service/ModalShoppingList";
+import {getRecipes} from "../../service/RecipeService";
+import {defaultRecipeData} from "../../static/static";
+import {queryShoppingList} from "../../service/BackendAPI";
 
-function Week(props) {
-    const initialStatus = {
+function Week() {
+    const initialSelection = {
         0: {breakfast: [], lunch: [], dinner: []},
         1: {breakfast: [], lunch: [], dinner: []},
         2: {breakfast: [], lunch: [], dinner: []},
@@ -14,10 +18,37 @@ function Week(props) {
         6: {breakfast: [], lunch: [], dinner: []},
     };
 
-    const selectedRecipe = useRef(initialStatus);
+    const selectedRecipes = useRef(initialSelection);
+    const getInitialRecipeData = () => {
+        if (
+            localStorage.getItem("recipeData") &&
+            JSON.parse(localStorage.getItem("recipeData")).data
+        ) {
+            return JSON.parse(localStorage.getItem("recipeData"));
+        } else {
+            return defaultRecipeData;
+        }
+    };
+    const initialRecipeData = getInitialRecipeData();
+    const [recipeData, setRecipeData] = useState(initialRecipeData);
+
+    useEffect(() => {
+        const newReipes = getRecipes(recipeData);
+        newReipes.then((result) => {
+            localStorage.removeItem("recipeData");
+            localStorage.setItem("recipeData", JSON.stringify(result));
+            setRecipeData({
+                ...recipeData,
+                data: result.data,
+                lastRetrieval: result.lastRetrieval,
+            });
+        });
+    }, []);
 
     function getShoppingList() {
-        console.log("submitting", selectedRecipe.current);
+        console.log("submitting", selectedRecipes.current);
+        console.log(JSON.stringify(selectedRecipes.current));
+        queryShoppingList(JSON.stringify(selectedRecipes.current));
     }
 
     return (
@@ -25,14 +56,7 @@ function Week(props) {
             <div className="headerContainer">
                 <Account />
                 <h1>Meal Prep for this Week</h1>
-                <Button
-                    basic
-                    // color="white"
-                    onClick={getShoppingList}
-                    style={{marginLeft: 20}}>
-                    <Icon name="shopping cart" size="large" />
-                    Get Shopping List
-                </Button>
+                <ModalShoppingList list={selectedRecipes.current} />
             </div>
             <div className="weekContainer">
                 {[...Array(7)].map((_, i) => {
@@ -40,8 +64,8 @@ function Week(props) {
                         <Day
                             key={i}
                             day={i + 1}
-                            selectedRecipe={selectedRecipe.current[i]}
-                            recipes={props.recipes}
+                            selectedRecipe={selectedRecipes.current[i]}
+                            recipes={recipeData.data}
                         />
                     );
                 })}

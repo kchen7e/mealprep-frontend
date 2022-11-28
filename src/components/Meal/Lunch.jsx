@@ -5,8 +5,7 @@ function Lunch(props) {
     function renderContent() {
         return (
             <LunchMenu
-                // handleSelect={handleSetRecipe}
-                // clearSelect={handleClear}
+                day={props.day}
                 recipes={props.recipes}
                 selectedRecipe={props.selectedRecipe}
             />

@@ -7,6 +7,7 @@ function Breakfast(props) {
             <BreakfastMenu
                 recipes={props.recipes}
                 selectedRecipe={props.selectedRecipe}
+                day={props.day}
             />
         );
     }

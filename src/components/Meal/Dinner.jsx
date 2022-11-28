@@ -5,8 +5,7 @@ function Dinner(props) {
     function renderContent() {
         return (
             <DinnerMenu
-                // handleSelect={handleSetRecipe}
-                // clearSelect={handleClear}
+                day={props.day}
                 recipes={props.recipes}
                 selectedRecipe={props.selectedRecipe}
             />

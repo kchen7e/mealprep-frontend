@@ -11,14 +11,17 @@ function Day(props) {
                 <Breakfast
                     recipes={props.recipes.breakfast}
                     selectedRecipe={props.selectedRecipe.breakfast}
+                    day={props.day}
                 />
                 <Lunch
                     recipes={props.recipes.lunch}
                     selectedRecipe={props.selectedRecipe.lunch}
+                    day={props.day}
                 />
                 <Dinner
                     recipes={props.recipes.dinner}
                     selectedRecipe={props.selectedRecipe.dinner}
+                    day={props.day}
                 />
             </div>
         </>
