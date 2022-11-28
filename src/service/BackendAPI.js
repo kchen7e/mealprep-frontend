@@ -6,11 +6,12 @@ const URL = process.env.MEALPREP_BACKEND_HOSTNAME
 const PORT = process.env.MEALPREP_BACKEND_PORT
     ? process.env.MEALPREP_BACKEND_PORT
     : "8080";
+const protocol = URL === "localhost" ? "http" : "https";
 
 export async function downloadRecipes() {
     return axios({
         method: "get",
-        url: `http://${URL}:${PORT}/api/recipe/get/all/`,
+        url: `${protocol}://${URL}:${PORT}/api/recipe/get/all/`,
         responseType: "json",
     })
         .then((response) => {
@@ -33,7 +34,7 @@ export async function downloadMyRecipes(userName, token) {
 
     axios({
         method: "get",
-        url: `http://${URL}:${PORT}/api/recipe/get/all`,
+        url: `${protocol}://${URL}:${PORT}/api/recipe/get/all`,
         responseType: "json",
     })
         .then((data) => {
@@ -77,7 +78,7 @@ export async function downloadUser(userName) {
     console.log("download user", userName);
     return axios
         .post(
-            `http://${URL}:${PORT}/api/user/get`,
+            `${protocol}://${URL}:${PORT}/api/user/get`,
             {
                 userName: userName,
             },
@@ -101,7 +102,7 @@ export async function queryShoppingList(list) {
     // console.log(list);
     return axios({
         method: "post",
-        url: `http://${URL}:${PORT}/api/shopping/get`,
+        url: `${protocol}://${URL}:${PORT}/api/shopping/get`,
         responseType: "json",
         data: list,
         headers: {
@@ -120,7 +121,7 @@ export async function queryShoppingList(list) {
 
 export function updateUser(userInfoUpdated) {
     return axios.patch(
-        `http://${URL}:${PORT}/api/user/update/`,
+        `${protocol}://${URL}:${PORT}/api/user/update/`,
         userInfoUpdated
     );
     // const result = await fetch("http://localhost:8080/api/user/update", {
