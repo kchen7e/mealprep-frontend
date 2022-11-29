@@ -2,7 +2,7 @@ import _ from "lodash";
 import React, {useState} from "react";
 import Modal from "react-modal";
 import {Button, Icon} from "semantic-ui-react";
-import {queryShoppingList} from "../service/BackendAPI";
+import {queryShoppingList} from "../../service/BackendAPI";
 
 function ModalShoppingList({list}) {
     Modal.setAppElement("#root");

@@ -1,12 +1,12 @@
 import axios from "axios";
+import httpStatus from "http-status";
 
-const URL = process.env.MEALPREP_BACKEND_HOSTNAME
-    ? process.env.MEALPREP_BACKEND_HOSTNAME
-    : "localhost";
-const PORT = process.env.MEALPREP_BACKEND_PORT
-    ? process.env.MEALPREP_BACKEND_PORT
-    : "8080";
-const protocol = URL === "localhost" ? "http" : "https";
+// const URL = "mealprep.storm7e.de";
+const URL = "localhost";
+// const PORT = "8081";
+const PORT = "8080";
+// const protocol = "https";
+const protocol = "http";
 
 export async function downloadRecipes() {
     return axios({
@@ -52,30 +52,10 @@ export async function downloadMyRecipes(userName, token) {
         .catch((error) => {
             throw error;
         });
-
-    // fetch("localhost:8080/api/user/auth").then((data) => {
-    //     fetch({
-    //         url: "localhost:8080/api/recipes/get",
-    //         method: "post",
-    //         token: data,
-    //     }).then((data) => {
-    //         data.forEach((element) => {
-    //             const recipe = element.json;
-    //             if (recipe.category === "breakfast") {
-    //                 breakfastRecipes.push(recipe);
-    //             } else if (recipe.category === "lunch") {
-    //                 lunchRecipes.push(recipe);
-    //             } else if (recipe.category === "dinner") {
-    //                 dinnerRecipes.push(recipe);
-    //             }
-    //         });
-    //     });
-    // });
     return recipes;
 }
 
-export async function downloadUser(userName) {
-    console.log("download user", userName);
+export async function downloadUser(userName, token) {
     return axios
         .post(
             `${protocol}://${URL}:${PORT}/api/user/get`,
@@ -89,7 +69,7 @@ export async function downloadUser(userName) {
             }
         )
         .then((response) => {
-            if (response.status === 200) {
+            if (response.status === httpStatus.OK) {
                 return response.data;
             }
         })
@@ -98,8 +78,32 @@ export async function downloadUser(userName) {
         });
 }
 
+export async function downloadUser2(userInfo) {
+    return axios
+        .post(
+            `${protocol}://${URL}:${PORT}/api/user/get`,
+            {
+                userName: userInfo.userName,
+                passowrd: userInfo.passowrd,
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        )
+        .then((response) => {
+            if (response.status === httpStatus.OK) {
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            throw error;
+        });
+}
+
 export async function queryShoppingList(list) {
-    // console.log(list);
     return axios({
         method: "post",
         url: `${protocol}://${URL}:${PORT}/api/shopping/get`,
@@ -110,7 +114,7 @@ export async function queryShoppingList(list) {
         },
     })
         .then((response) => {
-            if (response.status === 200) {
+            if (response.status === httpStatus.OK) {
                 return response.data;
             }
         })
@@ -120,101 +124,42 @@ export async function queryShoppingList(list) {
 }
 
 export function updateUser(userInfoUpdated) {
-    return axios.patch(
-        `${protocol}://${URL}:${PORT}/api/user/update/`,
-        userInfoUpdated
-    );
-    // const result = await fetch("http://localhost:8080/api/user/update", {
-    //     method: "PATCH",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //     },
-    //     body: userInfoUpdated,
-    // })
-    //     .then((response) => {
-    //         if (response.ok) {
-    //             return true;
-    //         } else return false;
-    //     })
-    //     .catch((err) => {
-    //         throw err;
-    //     });
-    // return result;
+    console.log(userInfoUpdated);
+    return axios({
+        method: "patch",
+        url: `${protocol}://${URL}:${PORT}/api/user/update`,
+        responseType: "json",
+        data: userInfoUpdated,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.status === httpStatus.ACCEPTED) {
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            throw error;
+        });
 }
 
-// export function updateUserName() {
-//     const breakfastRecipes = [];
-//     const lunchRecipes = [];
-//     const dinnerRecipes = [];
-//     const recipes = {
-//         breakfast: breakfastRecipes,
-//         lunch: lunchRecipes,
-//         dinner: dinnerRecipes,
-//     };
-
-//     return recipes;
-// }
-
-// export function updateFirstName() {
-//     const breakfastRecipes = [];
-//     const lunchRecipes = [];
-//     const dinnerRecipes = [];
-//     const recipes = {
-//         breakfast: breakfastRecipes,
-//         lunch: lunchRecipes,
-//         dinner: dinnerRecipes,
-//     };
-
-//     return recipes;
-// }
-
-// export function updateLastName() {
-//     const breakfastRecipes = [];
-//     const lunchRecipes = [];
-//     const dinnerRecipes = [];
-//     const recipes = {
-//         breakfast: breakfastRecipes,
-//         lunch: lunchRecipes,
-//         dinner: dinnerRecipes,
-//     };
-
-//     return recipes;
-// }
-
-// export function updateEmail() {
-//     const breakfastRecipes = [];
-//     const lunchRecipes = [];
-//     const dinnerRecipes = [];
-//     const recipes = {
-//         breakfast: breakfastRecipes,
-//         lunch: lunchRecipes,
-//         dinner: dinnerRecipes,
-//     };
-
-//     return recipes;
-// }
-
-// export function updateCountry() {
-//     const breakfastRecipes = [];
-//     const lunchRecipes = [];
-//     const dinnerRecipes = [];
-//     const recipes = {
-//         breakfast: breakfastRecipes,
-//         lunch: lunchRecipes,
-//         dinner: dinnerRecipes,
-//     };
-
-//     return recipes;
-// }
-
-// export function updatePassword() {
-//     const breakfastRecipes = [];
-//     const lunchRecipes = [];
-//     const dinnerRecipes = [];
-//     const recipes = {
-//         breakfast: breakfastRecipes,
-//         lunch: lunchRecipes,
-//         dinner: dinnerRecipes,
-//     };
-//     return recipes;
-// }
+export async function registerAccount(userInfo) {
+    return axios({
+        method: "post",
+        url: `${protocol}://${URL}:${PORT}/api/user/register`,
+        responseType: "json",
+        data: userInfo,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.status === httpStatus.CREATED) {
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            throw error;
+        });
+}

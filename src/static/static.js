@@ -7,7 +7,7 @@ export const UserInfo = {
     firstName: "",
     lastName: "",
     email: "",
-    country: "",
+    country: "au",
 };
 
 const breakfastRecipes = [];

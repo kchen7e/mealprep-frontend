@@ -20,10 +20,28 @@ export function getUserInfo(userName, token) {
     return result;
 }
 
-export function updateUserInfo(updatedUserInfo) {
-    const result = updateUser(updatedUserInfo)
+export async function updateUserInfo(updatedUserInfo) {
+    const result = updateUser(JSON.stringify(updatedUserInfo))
         .then((response) => {
-            return response.data;
+            return response;
+        })
+        .catch((err) => {
+            throw err;
+        });
+    return result;
+}
+
+export async function registerUser(userName, token) {
+    const result = downloadUser(userName)
+        .then((userData) => {
+            if (userData) {
+                const noNullData = _.mapValues(userData, (v) =>
+                    v === null ? "" : v
+                );
+                return noNullData;
+            } else {
+                return null;
+            }
         })
         .catch((err) => {
             console.log(err.message);
