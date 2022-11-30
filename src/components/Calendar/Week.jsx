@@ -34,7 +34,6 @@ function Week() {
 
     useEffect(() => {
         getRecipes(recipeData).then((result) => {
-            console.log("new recipes is ", result);
             localStorage.removeItem("recipeData");
             localStorage.setItem("recipeData", JSON.stringify(result));
             setRecipeData({
@@ -44,10 +43,6 @@ function Week() {
             });
         });
     }, []);
-
-    function getShoppingList() {
-        queryShoppingList(JSON.stringify(selectedRecipes.current));
-    }
 
     return (
         <>
