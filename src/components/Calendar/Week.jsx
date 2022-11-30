@@ -33,8 +33,8 @@ function Week() {
     const [recipeData, setRecipeData] = useState(initialRecipeData);
 
     useEffect(() => {
-        const newReipes = getRecipes(recipeData);
-        newReipes.then((result) => {
+        getRecipes(recipeData).then((result) => {
+            console.log("new recipes is ", result);
             localStorage.removeItem("recipeData");
             localStorage.setItem("recipeData", JSON.stringify(result));
             setRecipeData({

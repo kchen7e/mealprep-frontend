@@ -6,13 +6,14 @@ export async function getRecipes(recipeData) {
         !recipeData.lastRetrieval ||
         Math.round(Date.now() / 1000) - +recipeData.lastRetrieval > 600000
     ) {
+        console.log("pulling data now");
         await downloadRecipes().then((response) => {
+            recipeData.data.breakfast.length = 0;
+            recipeData.data.lunch.length = 0;
+            recipeData.data.dinner.length = 0;
+            recipeData.data.snacks.length = 0;
+            recipeData.data.dessert.length = 0;
             if (response.data) {
-                recipeData.data.breakfast.length = 0;
-                recipeData.data.lunch.length = 0;
-                recipeData.data.dinner.length = 0;
-                recipeData.data.snacks.length = 0;
-                recipeData.data.dessert.length = 0;
                 response.data.forEach((recipe) => {
                     if (recipe.mealType.includes("BREAKFAST")) {
                         recipeData.data.breakfast.push(recipe);

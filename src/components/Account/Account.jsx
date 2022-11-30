@@ -2,11 +2,12 @@ import React, {useEffect, useState, useRef} from "react";
 import Modal from "react-modal";
 import _ from "lodash";
 import {Button, Icon, Dropdown} from "semantic-ui-react";
-import {getUserInfo, updateUserInfo} from "../../service/UserService";
+import {updateUserInfo} from "../../service/UserService";
 import {UserInfo} from "../../static/static";
 import {CountryOptions} from "../../static/static";
 import Cookies from "js-cookie";
 import AccountRegister from "../Account/AccountRegister";
+import {downloadUser2, updateUser} from "../../service/BackendAPI";
 
 function Account() {
     // var userInfoOnServer = {...UserInfo};
@@ -18,22 +19,26 @@ function Account() {
     const [isOnHold, setIsOnHold] = useState(false);
 
     useEffect(() => {
-        if (cookieUserName) {
-            fillUserInfo(cookieUserName);
+        if (Cookies.get("userName") && Cookies.get("userToken")) {
+            const authInfo = {
+                userName: Cookies.get("userName"),
+                token: Cookies.get("userToken"),
+            };
+            fillUserInfo(authInfo);
         }
     }, []);
 
-    const fillUserInfo = (userName, objToFill) => {
-        getUserInfo(userName, "").then((info) => {
-            if (info) {
-                objToFill = _.cloneDeep(info);
+    const fillUserInfo = (authInfo) => {
+        downloadUser2(authInfo).then((data) => {
+            if (data) {
                 setuserInfoOnServer((userInfoOnServer) => ({
                     ...userInfoOnServer,
-                    userName: info.userName,
-                    firstName: info.firstName,
-                    lastName: info.lastName,
-                    email: info.email,
-                    country: info.country,
+                    userName: data.userName,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    email: data.email,
+                    country: data.country,
+                    token: data.token,
                 }));
             } else {
                 //no info or backend issue
@@ -77,7 +82,8 @@ function Account() {
 
     function saveUserInfo() {
         // setIsOnHold(true);
-        updateUserInfo(userInfoInBrowser1)
+        userInfoInBrowser1.token = Cookies.get("userToken");
+        updateUser(userInfoInBrowser1)
             .then((result) => {
                 if (result) {
                     // setIsOnHold(false);

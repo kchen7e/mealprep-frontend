@@ -79,26 +79,32 @@ export async function downloadUser(userName, token) {
 }
 
 export async function downloadUser2(userInfo) {
-    return axios
-        .post(
-            `${protocol}://${URL}:${PORT}/api/user/get`,
-            {
-                userName: userInfo.userName,
-                passowrd: userInfo.passowrd,
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }
-        )
+    console.log({userName: userInfo.userName, password: userInfo.password});
+    return axios({
+        method: "post",
+        url: `${protocol}://${URL}:${PORT}/api/user/get`,
+        data: {
+            userName: userInfo.userName,
+            password: userInfo.password,
+            token: userInfo.token,
+        },
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: userInfo.token,
+        },
+    })
         .then((response) => {
-            if (response.status === httpStatus.OK) {
+            console.log("response is ", response);
+            if (response.status === httpStatus.ACCEPTED) {
+                console.log(response.headers);
+                response.data.token = response.headers.authorization;
+                console.log(response.headers.authorization);
+                console.log(response.data);
                 return response.data;
             }
         })
         .catch((error) => {
-            console.log(error);
+            console.log("error is ", error);
             throw error;
         });
 }
@@ -128,7 +134,6 @@ export function updateUser(userInfoUpdated) {
     return axios({
         method: "patch",
         url: `${protocol}://${URL}:${PORT}/api/user/update`,
-        responseType: "json",
         data: userInfoUpdated,
         headers: {
             "Content-Type": "application/json",

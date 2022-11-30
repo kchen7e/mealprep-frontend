@@ -8,6 +8,7 @@ export const UserInfo = {
     lastName: "",
     email: "",
     country: "au",
+    token: "",
 };
 
 const breakfastRecipes = [];

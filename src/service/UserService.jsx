@@ -1,7 +1,7 @@
 import {downloadUser, updateUser} from "./BackendAPI";
 import _ from "lodash";
 
-export function getUserInfo(userName, token) {
+export function getUserInfo(userName) {
     const result = downloadUser(userName)
         .then((userData) => {
             if (userData) {
