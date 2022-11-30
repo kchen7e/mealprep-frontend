@@ -79,8 +79,16 @@ function Account() {
         />
     );
 
+    function logOut() {
+        if (Cookies.get("userName") && Cookies.get("userToken")) {
+            //call server to remove the token
+        }
+        Cookies.remove("userName", {domain: ".storm7e.de"});
+        Cookies.remove("userToken", {domain: ".storm7e.de"});
+        window.location.reload(false);
+    }
+
     function saveUserInfo() {
-        // setIsOnHold(true);
         userInfoInBrowser1.token = Cookies.get("userToken");
         updateUser(userInfoInBrowser1)
             .then((result) => {
@@ -95,11 +103,15 @@ function Account() {
                         country: result.country,
                     }));
                 } else {
-                    console.log("backend error: invalid user name");
+                    console.log("backend error: invalid token");
+                    alert(
+                        "save failed due to session expire, please login again"
+                    );
+                    window.location.reload(false);
                 }
             })
             .catch((error) => {
-                // setIsOnHold(false);
+                alert("backend offline, please try again later");
                 console.log("backend connection failed: ", error.message);
             });
     }

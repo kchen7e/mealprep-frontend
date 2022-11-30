@@ -1,12 +1,12 @@
 import axios from "axios";
 import httpStatus from "http-status";
 
-// const URL = "mealprep.storm7e.de";
-const URL = "localhost";
-// const PORT = "8081";
-const PORT = "8080";
-// const protocol = "https";
-const protocol = "http";
+const URL = "mealprep.storm7e.de";
+// const URL = "localhost";
+const PORT = "8081";
+// const PORT = "8080";
+const protocol = "https";
+// const protocol = "http";
 
 export async function downloadRecipes() {
     return axios({
@@ -132,6 +132,7 @@ export async function registerAccount(userInfo) {
     })
         .then((response) => {
             if (response.status === httpStatus.CREATED) {
+                response.data.token = response.headers.authorization;
                 return response.data;
             }
         })

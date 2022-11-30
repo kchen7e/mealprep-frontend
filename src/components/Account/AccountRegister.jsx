@@ -4,7 +4,7 @@ import _ from "lodash";
 import {Button, Icon, Dropdown} from "semantic-ui-react";
 import {UserInfo} from "../../static/static";
 import {CountryOptions} from "../../static/static";
-import {downloadUser} from "../../service/BackendAPI";
+import {downloadUser, registerAccount} from "../../service/BackendAPI";
 import Cookies from "js-cookie";
 
 function AccountRegister() {
@@ -16,8 +16,6 @@ function AccountRegister() {
     Modal.setAppElement("#root");
 
     const [userInfoUpdated, setuserInfoUpdated] = useState({...UserInfo});
-    var test = {};
-    // const [userInfoUpdated, setuserInfoUpdated] = useState({...UserInfo});
 
     const CountryDropDown = () => (
         <Dropdown
@@ -65,6 +63,28 @@ function AccountRegister() {
     }
 
     function registerUser() {
+        if (
+            userInfoUpdated.userName &&
+            userInfoUpdated.password &&
+            userInfoUpdated.email &&
+            userInfoUpdated.country
+        ) {
+            registerAccount(userInfoUpdated)
+                .then((data) => {
+                    if (data) {
+                        Cookies.set("userName", data.userName, {expires: 30});
+                        Cookies.set("userToken", data.token, {expires: 30});
+                        window.location.reload(false);
+                    } else {
+                        console.log("register account failed");
+                        alert("user name taken, please choose another one");
+                    }
+                })
+                .catch((error) => {
+                    console.log(error.message);
+                    console.log("backend connection failed: ", error.message);
+                });
+        }
         if (!userInfoUpdated.userName) {
             setuserNameRequired(!userNameRequired);
         }
@@ -93,13 +113,20 @@ function AccountRegister() {
                         userInfoOnServer &&
                         userInfoUpdated.userName === userInfoOnServer.userName
                     ) {
-                        Cookies.set("userName", userInfoOnServer.userName);
-                        Cookies.set("userToken", userInfoOnServer.token);
+                        Cookies.set("userName", userInfoOnServer.userName, {
+                            expires: 30,
+                        });
+                        Cookies.set("userToken", userInfoOnServer.token, {
+                            expires: 30,
+                        });
                         window.location.reload(false);
+                    } else {
+                        alert("incorrect user name and password combination");
                     }
                 })
                 .catch((error) => {
-                    alert("login failed");
+                    console.log(error.message);
+                    alert("connection to server error, please try again later");
                 });
         }
     }
