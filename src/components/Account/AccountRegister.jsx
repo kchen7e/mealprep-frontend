@@ -4,7 +4,7 @@ import _ from "lodash";
 import {Button, Icon, Dropdown} from "semantic-ui-react";
 import {UserInfo} from "../../static/static";
 import {CountryOptions} from "../../static/static";
-import {downloadUser2} from "../../service/BackendAPI";
+import {downloadUser} from "../../service/BackendAPI";
 import Cookies from "js-cookie";
 
 function AccountRegister() {
@@ -80,7 +80,6 @@ function AccountRegister() {
     }
 
     function loginUser(event) {
-        // console.log(event);
         if (!userInfoUpdated.userName) {
             setuserNameRequired(!userNameRequired);
         }
@@ -88,20 +87,18 @@ function AccountRegister() {
             setpasswordRequired(!passwordRequired);
         }
         if (userInfoUpdated.userName && userInfoUpdated.password) {
-            downloadUser2(userInfoUpdated)
+            downloadUser(userInfoUpdated)
                 .then((userInfoOnServer) => {
                     if (
                         userInfoOnServer &&
                         userInfoUpdated.userName === userInfoOnServer.userName
                     ) {
-                        console.log("login okay, set cookies");
                         Cookies.set("userName", userInfoOnServer.userName);
                         Cookies.set("userToken", userInfoOnServer.token);
                         window.location.reload(false);
                     }
                 })
                 .catch((error) => {
-                    console.log(error.message);
                     alert("login failed");
                 });
         }

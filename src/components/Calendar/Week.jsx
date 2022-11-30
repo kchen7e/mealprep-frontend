@@ -46,8 +46,6 @@ function Week() {
     }, []);
 
     function getShoppingList() {
-        console.log("submitting", selectedRecipes.current);
-        console.log(JSON.stringify(selectedRecipes.current));
         queryShoppingList(JSON.stringify(selectedRecipes.current));
     }
 

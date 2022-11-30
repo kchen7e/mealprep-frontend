@@ -1,13 +1,12 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "react-modal";
 import _ from "lodash";
 import {Button, Icon, Dropdown} from "semantic-ui-react";
-import {updateUserInfo} from "../../service/UserService";
 import {UserInfo} from "../../static/static";
 import {CountryOptions} from "../../static/static";
 import Cookies from "js-cookie";
 import AccountRegister from "../Account/AccountRegister";
-import {downloadUser2, updateUser} from "../../service/BackendAPI";
+import {downloadUser, updateUser} from "../../service/BackendAPI";
 
 function Account() {
     // var userInfoOnServer = {...UserInfo};
@@ -29,7 +28,7 @@ function Account() {
     }, []);
 
     const fillUserInfo = (authInfo) => {
-        downloadUser2(authInfo).then((data) => {
+        downloadUser(authInfo).then((data) => {
             if (data) {
                 setuserInfoOnServer((userInfoOnServer) => ({
                     ...userInfoOnServer,

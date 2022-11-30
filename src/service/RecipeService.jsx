@@ -6,7 +6,6 @@ export async function getRecipes(recipeData) {
         !recipeData.lastRetrieval ||
         Math.round(Date.now() / 1000) - +recipeData.lastRetrieval > 600000
     ) {
-        console.log("pulling data now");
         await downloadRecipes().then((response) => {
             recipeData.data.breakfast.length = 0;
             recipeData.data.lunch.length = 0;

@@ -32,14 +32,12 @@ function ModalShoppingList({list}) {
         if (currentList) {
             const currentListObj = JSON.parse(currentList);
             if (_.isEqual(currentListObj, list)) {
-                console.log(list);
                 return;
             }
         }
         if (!_.isEmpty(list)) {
             queryShoppingList(JSON.stringify(list)).then((data) => {
                 if (data) {
-                    console.log("ingredients are ", data);
                     sessionStorage.setItem("currentList", JSON.stringify(list));
                     setingredientList(data);
                 }

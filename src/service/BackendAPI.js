@@ -55,31 +55,7 @@ export async function downloadMyRecipes(userName, token) {
     return recipes;
 }
 
-export async function downloadUser(userName, token) {
-    return axios
-        .post(
-            `${protocol}://${URL}:${PORT}/api/user/get`,
-            {
-                userName: userName,
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }
-        )
-        .then((response) => {
-            if (response.status === httpStatus.OK) {
-                return response.data;
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-}
-
-export async function downloadUser2(userInfo) {
-    console.log({userName: userInfo.userName, password: userInfo.password});
+export async function downloadUser(userInfo) {
     return axios({
         method: "post",
         url: `${protocol}://${URL}:${PORT}/api/user/get`,
@@ -94,12 +70,8 @@ export async function downloadUser2(userInfo) {
         },
     })
         .then((response) => {
-            console.log("response is ", response);
             if (response.status === httpStatus.ACCEPTED) {
-                console.log(response.headers);
                 response.data.token = response.headers.authorization;
-                console.log(response.headers.authorization);
-                console.log(response.data);
                 return response.data;
             }
         })
@@ -130,7 +102,6 @@ export async function queryShoppingList(list) {
 }
 
 export function updateUser(userInfoUpdated) {
-    console.log(userInfoUpdated);
     return axios({
         method: "patch",
         url: `${protocol}://${URL}:${PORT}/api/user/update`,
