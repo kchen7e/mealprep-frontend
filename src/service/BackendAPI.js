@@ -1,12 +1,22 @@
 import axios from "axios";
 import httpStatus from "http-status";
 
-const URL = "mealprep.storm7e.de";
+const {
+    REACT_APP_MEALPREP_BACKEND_HOSTNAME,
+    REACT_APP_MEALPREP_BACKEND_PORT,
+    REACT_APP_MEALPREP_BACKEND_PROTOCOL,
+} = process.env;
+
+// const URL = "mealprep.storm7e.de";
 // const URL = "localhost";
-const PORT = "8081";
+// const PORT = "8081";
 // const PORT = "8080";
-const protocol = "https";
+// const protocol = "https";
 // const protocol = "http";
+
+const protocol = REACT_APP_MEALPREP_BACKEND_PROTOCOL;
+const PORT = REACT_APP_MEALPREP_BACKEND_PORT;
+const URL = REACT_APP_MEALPREP_BACKEND_HOSTNAME;
 
 export async function downloadRecipes() {
     return axios({
@@ -113,6 +123,8 @@ export function updateUser(userInfoUpdated) {
         .then((response) => {
             if (response.status === httpStatus.ACCEPTED) {
                 return response.data;
+            } else {
+                console.log("nothing");
             }
         })
         .catch((error) => {
@@ -121,6 +133,7 @@ export function updateUser(userInfoUpdated) {
 }
 
 export async function registerAccount(userInfo) {
+    console.log(JSON.stringify(userInfo));
     return axios({
         method: "post",
         url: `${protocol}://${URL}:${PORT}/api/user/register`,

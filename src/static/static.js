@@ -29,6 +29,8 @@ export const defaultRecipeData = {
     lastRetrieval: "",
 };
 
+export const REFRESH_INTERVAL = 300; //seconds
+
 export const CountryOptions = [
     {key: "af", value: "af", flag: "af", text: "Afghanistan"},
     {key: "ax", value: "ax", flag: "ax", text: "Aland Islands"},

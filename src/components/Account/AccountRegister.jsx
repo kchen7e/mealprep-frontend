@@ -186,6 +186,7 @@ function AccountRegister() {
                                 name="password"
                                 type="password"
                                 onChange={onTextInputChange}
+                                placeholder="min. 6 digits, numbers and letters"
                             />
                         </div>
 
@@ -253,10 +254,7 @@ function AccountRegister() {
     return (
         <>
             <div className="ui buttons">
-                <Button
-                    basic
-                    // color="white"
-                    onClick={openModal}>
+                <Button basic color="yellow" onClick={openModal}>
                     <Icon name="user" size="large" />
                     Register/Login
                 </Button>

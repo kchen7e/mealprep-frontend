@@ -319,11 +319,7 @@ function Account() {
     if (userInfoOnServer.userName) {
         return (
             <>
-                <Button
-                    basic
-                    // color="white"
-                    ref={(ref) => {}}
-                    onClick={openModal}>
+                <Button basic white onClick={openModal} color="yellow">
                     <Icon name="home" size="large" />
                     My Account
                 </Button>

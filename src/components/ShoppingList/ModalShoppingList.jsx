@@ -71,7 +71,7 @@ function ModalShoppingList({list}) {
         <>
             <Button
                 basic
-                // color="white"
+                color="yellow"
                 onClick={getShoppingList}
                 style={{marginLeft: 20}}>
                 <Icon name="shopping cart" size="large" />

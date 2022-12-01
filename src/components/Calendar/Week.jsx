@@ -1,11 +1,9 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Button, Icon} from "semantic-ui-react";
 import Day from "./Day";
 import Account from "../Account/Account";
 import ModalShoppingList from "../ShoppingList/ModalShoppingList";
 import {getRecipes} from "../../service/RecipeService";
 import {defaultRecipeData} from "../../static/static";
-import {queryShoppingList} from "../../service/BackendAPI";
 
 function Week() {
     const initialSelection = {
