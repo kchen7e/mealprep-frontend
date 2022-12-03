@@ -87,7 +87,6 @@ export async function downloadUser(userInfo) {
         })
         .catch((error) => {
             console.log("error is ", error);
-            throw error;
         });
 }
 
@@ -107,7 +106,7 @@ export async function queryShoppingList(list) {
             }
         })
         .catch((error) => {
-            throw error;
+            console.log("error is ", error);
         });
 }
 
@@ -128,7 +127,7 @@ export function updateUser(userInfoUpdated) {
             }
         })
         .catch((error) => {
-            throw error;
+            console.log("error is ", error);
         });
 }
 
@@ -150,6 +149,6 @@ export async function registerAccount(userInfo) {
             }
         })
         .catch((error) => {
-            throw error;
+            console.log("error is ", error);
         });
 }

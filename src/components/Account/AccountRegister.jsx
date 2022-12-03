@@ -125,7 +125,6 @@ function AccountRegister() {
                     }
                 })
                 .catch((error) => {
-                    console.log(error.message);
                     alert("connection to server error, please try again later");
                 });
         }
