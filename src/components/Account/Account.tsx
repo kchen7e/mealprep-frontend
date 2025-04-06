@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
 import Modal from "react-modal";
 import _ from "lodash";
-import {Button, Icon, Dropdown} from "semantic-ui-react";
+import { Button, Dropdown } from "antd";
+import{ HomeOutlined} from '@ant-design/icons';
 import {UserInfo} from "../../static/static";
 import {CountryOptions} from "../../static/static";
 import Cookies from "js-cookie";
-import AccountRegister from "../Account/AccountRegister";
-import {downloadUser, updateUser} from "../../service/BackendAPI";
+import AccountRegister from "./AccountRegister";
+import {downloadUser, updateUser, logOutUser} from "../../service/BackendAPI";
 
 function Account() {
     // var userInfoOnServer = {...UserInfo};
@@ -82,6 +83,7 @@ function Account() {
     function logOut() {
         if (Cookies.get("userName") && Cookies.get("userToken")) {
             //call server to remove the token
+            logOutUser(userInfoOnServer.userName, userInfoOnServer.token);
         }
         Cookies.remove("userName", {domain: ".storm7e.de"});
         Cookies.remove("userToken", {domain: ".storm7e.de"});
@@ -165,7 +167,7 @@ function Account() {
                     <button
                         ref={(ref) => {}}
                         className="ui button"
-                        onClick={closeModal}>
+                        onClick={logOut}>
                         Exit
                     </button>
                     <div className="or"></div>
@@ -320,7 +322,7 @@ function Account() {
         return (
             <>
                 <Button basic white onClick={openModal} color="yellow">
-                    <Icon name="home" size="large" />
+                    <HomeOutlined name="home" size="large" />
                     My Account
                 </Button>
                 <Modal

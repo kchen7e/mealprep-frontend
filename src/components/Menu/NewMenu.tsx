@@ -1,5 +1,7 @@
 import React from "react";
-import {Button, Icon, Modal} from "semantic-ui-react";
+import {Button, Modal} from "antd";
+import { ArrowRightOutlined } from '@ant-design/icons';
+
 
 function NewMenu() {
     const [firstOpen, setFirstOpen] = React.useState(false);
@@ -17,7 +19,7 @@ function NewMenu() {
                 <Modal.Header>Modal #1</Modal.Header>
                 <Modal.Content image>
                     <div className="image">
-                        <Icon name="right arrow" />
+                        <ArrowRightOutlined name="right arrow" />
                     </div>
                     <Modal.Description>
                         <p>

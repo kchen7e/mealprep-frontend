@@ -1,7 +1,8 @@
 import _ from "lodash";
 import React, {useState} from "react";
 import Modal from "react-modal";
-import {Button, Icon} from "semantic-ui-react";
+import { Button } from "antd";
+import { ShoppingCartOutlined, CloseOutlined }from '@ant-design/icons';
 import {queryShoppingList} from "../../service/BackendAPI";
 
 function ModalShoppingList({list}) {
@@ -74,7 +75,7 @@ function ModalShoppingList({list}) {
                 color="yellow"
                 onClick={getShoppingList}
                 style={{marginLeft: 20}}>
-                <Icon name="shopping cart" size="large" />
+                <ShoppingCartOutlined name="shopping cart" size="large" />
                 Get Shopping List
             </Button>
             <Modal
@@ -84,7 +85,7 @@ function ModalShoppingList({list}) {
                 contentLabel="Menu">
                 <div className="modalContainer">
                     <div className="modalHeader">
-                        <Icon name="close" size="large" onClick={closeModal} />
+                        <CloseOutlined name="close" size="large" onClick={closeModal} />
                         <h2>Shopping List</h2>
                     </div>
                     <div className="shoppingListContainer">

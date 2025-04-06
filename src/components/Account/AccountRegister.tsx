@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from "react";
 import Modal from "react-modal";
 import _ from "lodash";
-import {Button, Icon, Dropdown} from "semantic-ui-react";
+import { Button, Dropdown } from "antd";
+import {CloseOutlined, UserOutlined} from '@ant-design/icons';
 import {UserInfo} from "../../static/static";
 import {CountryOptions} from "../../static/static";
 import {downloadUser, registerAccount} from "../../service/BackendAPI";
@@ -133,7 +134,7 @@ function AccountRegister() {
     function renderHeader() {
         return (
             <>
-                <Icon name="close" size="large" onClick={closeModal} />
+                <CloseOutlined name="close" size="large" onClick={closeModal} />
                 <h2>Welcome to MealPrep</h2>
             </>
         );
@@ -254,10 +255,10 @@ function AccountRegister() {
         <>
             <div className="ui buttons">
                 <Button basic color="yellow" onClick={openModal}>
-                    <Icon name="user" size="large" />
+                    <UserOutlined name="user" size="large" />
                     Register/Login
                 </Button>
-                {/* <div className="or"></div> */}
+
             </div>
             <Modal
                 isOpen={modalIsOpen}

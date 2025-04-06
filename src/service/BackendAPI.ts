@@ -2,26 +2,19 @@ import axios from "axios";
 import httpStatus from "http-status";
 
 const {
-    REACT_APP_MEALPREP_BACKEND_HOSTNAME,
-    REACT_APP_MEALPREP_BACKEND_PORT,
-    REACT_APP_MEALPREP_BACKEND_PROTOCOL,
-} = process.env;
+    VITE_MEALPREP_BACKEND_HOSTNAME,
+    VITE_MEALPREP_BACKEND_PORT,
+    VITE_MEALPREP_BACKEND_PROTOCOL,
+} = import.meta.env;
 
-// const URL = "mealprep.storm7e.de";
-// const URL = "localhost";
-// const PORT = "8081";
-// const PORT = "8080";
-// const protocol = "https";
-// const protocol = "http";
-
-const protocol = REACT_APP_MEALPREP_BACKEND_PROTOCOL;
-const PORT = REACT_APP_MEALPREP_BACKEND_PORT;
-const URL = REACT_APP_MEALPREP_BACKEND_HOSTNAME;
+const PROTOCOL = VITE_MEALPREP_BACKEND_PROTOCOL;
+const PORT = VITE_MEALPREP_BACKEND_PORT;
+const URL = VITE_MEALPREP_BACKEND_HOSTNAME;
 
 export async function downloadRecipes() {
     return axios({
         method: "get",
-        url: `${protocol}://${URL}:${PORT}/api/recipe/get/all/`,
+        url: `${PROTOCOL}://${URL}:${PORT}/api/recipe/get/all/`,
         responseType: "json",
     })
         .then((response) => {
@@ -44,7 +37,7 @@ export async function downloadMyRecipes(userName, token) {
 
     axios({
         method: "get",
-        url: `${protocol}://${URL}:${PORT}/api/recipe/get/all`,
+        url: `${PROTOCOL}://${URL}:${PORT}/api/recipe/get/all`,
         responseType: "json",
     })
         .then((data) => {
@@ -68,7 +61,7 @@ export async function downloadMyRecipes(userName, token) {
 export async function downloadUser(userInfo) {
     return axios({
         method: "post",
-        url: `${protocol}://${URL}:${PORT}/api/user/get`,
+        url: `${PROTOCOL}://${URL}:${PORT}/api/user/get`,
         data: {
             userName: userInfo.userName,
             password: userInfo.password,
@@ -80,6 +73,7 @@ export async function downloadUser(userInfo) {
         },
     })
         .then((response) => {
+            console.log(response);
             if (response.status === httpStatus.ACCEPTED) {
                 response.data.token = response.headers.authorization;
                 return response.data;
@@ -93,7 +87,7 @@ export async function downloadUser(userInfo) {
 export async function queryShoppingList(list) {
     return axios({
         method: "post",
-        url: `${protocol}://${URL}:${PORT}/api/shopping/get`,
+        url: `${PROTOCOL}://${URL}:${PORT}/api/shopping/get`,
         responseType: "json",
         data: list,
         headers: {
@@ -113,7 +107,7 @@ export async function queryShoppingList(list) {
 export function updateUser(userInfoUpdated) {
     return axios({
         method: "patch",
-        url: `${protocol}://${URL}:${PORT}/api/user/update`,
+        url: `${PROTOCOL}://${URL}:${PORT}/api/user/update`,
         data: userInfoUpdated,
         headers: {
             "Content-Type": "application/json",
@@ -135,7 +129,7 @@ export async function registerAccount(userInfo) {
     console.log(JSON.stringify(userInfo));
     return axios({
         method: "post",
-        url: `${protocol}://${URL}:${PORT}/api/user/register`,
+        url: `${PROTOCOL}://${URL}:${PORT}/api/user/register`,
         responseType: "json",
         data: userInfo,
         headers: {
@@ -151,4 +145,19 @@ export async function registerAccount(userInfo) {
         .catch((error) => {
             console.log("error is ", error);
         });
+}
+
+export async function logOutUser(userName, token) {
+    axios({
+        method: "post",
+        url: `${PROTOCOL}://${URL}:${PORT}/api/user/logout`,
+        responseType: "json",
+        data: userName,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    }).then(data => {
+        console.log(data);
+    })
+
 }

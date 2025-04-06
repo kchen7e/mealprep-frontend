@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
 import Modal from "react-modal";
-import {Button, Icon} from "semantic-ui-react";
+import { Button } from "antd";
+import{ CloseOutlined} from '@ant-design/icons';
+
 
 function ModalMenu({modalButton, renderers}) {
     Modal.setAppElement("#root");
@@ -38,7 +40,7 @@ function ModalMenu({modalButton, renderers}) {
                 contentLabel="Menu">
                 <div className="modalContainer">
                     <div className="modalHeader">
-                        <Icon name="close" size="large" onClick={closeModal} />
+                        <CloseOutlined name="close" size="large" onClick={closeModal} />
                         {renderers.header()}
                     </div>
                     <div className="modalBody">{renderers.body()}</div>
