@@ -1,7 +1,6 @@
 import React from "react";
-import {Button, Modal} from "antd";
-import { ArrowRightOutlined } from '@ant-design/icons';
-
+import { Button, Modal, Space } from "antd";
+import { ArrowRightOutlined, RightOutlined, CheckOutlined } from "@ant-design/icons";
 
 function NewMenu() {
     const [firstOpen, setFirstOpen] = React.useState(false);
@@ -12,45 +11,39 @@ function NewMenu() {
             <Button onClick={() => setFirstOpen(true)}>Open first Modal</Button>
 
             <Modal
-                onClose={() => setFirstOpen(false)}
-                onOpen={() => setFirstOpen(true)}
+                title="Modal #1"
                 open={firstOpen}
-            >
-                <Modal.Header>Modal #1</Modal.Header>
-                <Modal.Content image>
-                    <div className="image">
-                        <ArrowRightOutlined name="right arrow" />
-                    </div>
-                    <Modal.Description>
-                        <p>
-                            We have more to share with you. Follow us along to
-                            modal 2
-                        </p>
-                    </Modal.Description>
-                </Modal.Content>
-                <Modal.Actions>
-                    <Button onClick={() => setSecondOpen(true)} primary>
-                        Proceed <Icon name="right chevron" />
+                onCancel={() => setFirstOpen(false)}
+                footer={
+                    <Button type="primary" onClick={() => setSecondOpen(true)}>
+                        Proceed <RightOutlined />
                     </Button>
-                </Modal.Actions>
+                }
+            >
+                <Space align="center">
+                    <ArrowRightOutlined style={{ fontSize: 24 }} />
+                    <p>We have more to share with you. Follow us along to modal 2</p>
+                </Space>
+            </Modal>
 
-                <Modal
-                    onClose={() => setSecondOpen(false)}
-                    open={secondOpen}
-                    size="small"
-                >
-                    <Modal.Header>Modal #2</Modal.Header>
-                    <Modal.Content>
-                        <p>That's everything!</p>
-                    </Modal.Content>
-                    <Modal.Actions>
-                        <Button
-                            icon="check"
-                            content="All Done"
-                            onClick={() => setSecondOpen(false)}
-                        />
-                    </Modal.Actions>
-                </Modal>
+            <Modal
+                title="Modal #2"
+                open={secondOpen}
+                onCancel={() => setSecondOpen(false)}
+                width={400}
+                footer={
+                    <Button
+                        icon={<CheckOutlined />}
+                        onClick={() => {
+                            setSecondOpen(false);
+                            setFirstOpen(false);
+                        }}
+                    >
+                        All Done
+                    </Button>
+                }
+            >
+                <p>That's everything!</p>
             </Modal>
         </>
     );

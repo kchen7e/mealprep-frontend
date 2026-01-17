@@ -1,20 +1,18 @@
 import React, {useEffect, useState} from "react";
-import Modal from "react-modal";
 import _ from "lodash";
-import { Button, Dropdown } from "antd";
-import{ HomeOutlined} from '@ant-design/icons';
-import {UserInfo} from "../../static/static";
-import {CountryOptions} from "../../static/static";
+import { Button, Space, Form, Input, Select, Modal, Typography } from "antd";
+import { HomeOutlined, BookOutlined } from '@ant-design/icons';
+import { DefaultUserInfo, CountryOptions } from "../../static/constants";
 import Cookies from "js-cookie";
 import AccountRegister from "./AccountRegister";
-import {downloadUser, updateUser, logOutUser} from "../../service/BackendAPI";
+import { downloadUser, updateUser, logOutUser } from "../../service/BackendAPI";
+
+const { Title } = Typography;
 
 function Account() {
-    // var userInfoOnServer = {...UserInfo};
-    Modal.setAppElement("#root");
     let cookieUserName = Cookies.get("userName");
-    const [userInfoOnServer, setuserInfoOnServer] = useState({...UserInfo});
-    const [userInfoInBrowser1, setuserInfoInBrowser1] = useState({...UserInfo});
+    const [userInfoOnServer, setuserInfoOnServer] = useState({...DefaultUserInfo});
+    const [userInfoInBrowser1, setuserInfoInBrowser1] = useState({...DefaultUserInfo});
     const [modalIsOpen, setIsOpen] = useState(false);
     const [isOnHold, setIsOnHold] = useState(false);
 
@@ -62,20 +60,20 @@ function Account() {
     };
 
     const CountryDropDown = () => (
-        <Dropdown
-            name="country"
-            clearable
-            fluid
-            search
-            selection
-            options={CountryOptions}
+        <Select
             placeholder="Select Country"
-            onChange={handleCountryChange}
-            // defaultValue={userInfo.current.country}
+            showSearch
+            allowClear
+            style={{ width: '100%' }}
+            options={CountryOptions}
             value={
                 _.isEqual(userInfoInBrowser1.country, userInfoOnServer.country)
                     ? userInfoOnServer.country
                     : userInfoInBrowser1.country
+            }
+            onChange={handleCountryChange}
+            filterOption={(input, option) =>
+                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
             }
         />
     );
@@ -87,7 +85,7 @@ function Account() {
         }
         Cookies.remove("userName", {domain: ".storm7e.de"});
         Cookies.remove("userToken", {domain: ".storm7e.de"});
-        window.location.reload(false);
+        window.location.reload();
     }
 
     function saveUserInfo() {
@@ -109,7 +107,7 @@ function Account() {
                     alert(
                         "save failed due to session expire, please login again"
                     );
-                    window.location.reload(false);
+                    window.location.reload();
                 }
             })
             .catch((error) => {
@@ -142,11 +140,11 @@ function Account() {
             }));
         }
     }
-
-    function handleCountryChange(event, data) {
+    
+    function handleCountryChange(value: string) {
         setuserInfoInBrowser1((userInfoInBrowser1) => ({
             ...userInfoInBrowser1,
-            country: data.value,
+            country: value,
         }));
     }
 
@@ -162,42 +160,31 @@ function Account() {
 
     function renderHeader() {
         return (
-            <>
-                <div className="ui buttons">
-                    <button
-                        ref={(ref) => {}}
-                        className="ui button"
-                        onClick={logOut}>
-                        Exit
-                    </button>
-                    <div className="or"></div>
-                    <button
-                        ref={(ref) => {}}
-                        className={
-                            _.isEqual(userInfoInBrowser1, userInfoOnServer)
-                                ? "ui positive button disabled"
-                                : "ui positive button active"
-                        }
-                        onClick={saveUserInfo}>
+            <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                <Title level={3} style={{ margin: 0 }}>My Account</Title>
+                <Space.Compact>
+                    <Button danger onClick={logOut}>Exit</Button>
+                    <Button
+                        type="primary"
+                        disabled={_.isEqual(userInfoInBrowser1, userInfoOnServer)}
+                        onClick={saveUserInfo}
+                    >
                         Save
-                    </button>
-                </div>
-                <h2>My Account</h2>
-            </>
+                    </Button>
+                </Space.Compact>
+            </Space>
         );
     }
 
     function renderBody() {
         return (
             <>
-                <div className="ui equal width form">
-                    <div className="fields">
-                        <div className="field">
-                            <label>User Name</label>
-                            <input
+                <Form layout="vertical">
+                    <div style={{ display: 'flex', gap: '16px' }}>
+                        <Form.Item label="User Name" style={{ flex: 1 }}>
+                            <Input
                                 name="userName"
                                 disabled
-                                type="text"
                                 placeholder="User Name"
                                 value={userInfoOnServer.userName}
                                 onFocus={onTextInputFocus}
@@ -205,11 +192,9 @@ function Account() {
                                 onChange={onTextInputChange}
                                 readOnly
                             />
-                        </div>
-                        <div className="field">
-                            <label>Email</label>
-                            <input
-                                type="text"
+                        </Form.Item>
+                        <Form.Item label="Email" style={{ flex: 1 }}>
+                            <Input
                                 name="email"
                                 placeholder="Email"
                                 value={userInfoInBrowser1.email}
@@ -218,11 +203,9 @@ function Account() {
                                 onChange={onTextInputChange}
                                 readOnly
                             />
-                        </div>
-                        <div className="field">
-                            <label>Password</label>
-                            <input
-                                type="password"
+                        </Form.Item>
+                        <Form.Item label="Password" style={{ flex: 1 }}>
+                            <Input.Password
                                 name="password"
                                 onFocus={onTextInputFocus}
                                 onBlur={onTextInputFocusOut}
@@ -230,13 +213,11 @@ function Account() {
                                 value={userInfoInBrowser1.password}
                                 readOnly
                             />
-                        </div>
+                        </Form.Item>
                     </div>
-                    <div className="fields">
-                        <div className="field">
-                            <label>First name</label>
-                            <input
-                                type="text"
+                    <div style={{ display: 'flex', gap: '16px' }}>
+                        <Form.Item label="First name" style={{ flex: 1 }}>
+                            <Input
                                 name="firstName"
                                 placeholder="First Name"
                                 value={userInfoInBrowser1.firstName}
@@ -245,11 +226,9 @@ function Account() {
                                 onChange={onTextInputChange}
                                 readOnly
                             />
-                        </div>
-                        <div className="field">
-                            <label>Last name</label>
-                            <input
-                                type="text"
+                        </Form.Item>
+                        <Form.Item label="Last name" style={{ flex: 1 }}>
+                            <Input
                                 name="lastName"
                                 placeholder="Last Name"
                                 value={userInfoInBrowser1.lastName}
@@ -258,26 +237,19 @@ function Account() {
                                 onChange={onTextInputChange}
                                 readOnly
                             />
-                        </div>
-                        <div className="field">
-                            <label>Coutry/Region</label>
+                        </Form.Item>
+                        <Form.Item label="Country/Region" style={{ flex: 1 }}>
                             <CountryDropDown />
-                        </div>
+                        </Form.Item>
                     </div>
-                </div>
+                </Form>
             </>
         );
     }
 
     function renderFooter() {
         return (
-            <Button
-                ref={(ref) => {}}
-                basic
-                // color="white"
-            >
-                {/* <Icon name="home" size="large" /> */}
-                <i className="book icon"></i>
+            <Button type="default" icon={<BookOutlined />}>
                 My Own Recipes
             </Button>
         );
@@ -308,11 +280,6 @@ function Account() {
         alert("registration page");
     }
 
-    function afterOpenModal() {
-        // references are now sync'd and can be accessed.
-        // subtitle.style.color = "blue";
-    }
-
     function closeModal() {
         syncUserInfoBrowserServer();
         setIsOpen(false);
@@ -321,26 +288,27 @@ function Account() {
     if (userInfoOnServer.userName) {
         return (
             <>
-                <Button basic white onClick={openModal} color="yellow">
-                    <HomeOutlined name="home" size="large" />
+                <Button
+                    onClick={openModal}
+                    icon={<HomeOutlined />}
+                    style={{
+                        backgroundColor: "#FBBD08",
+                        borderColor: "#FBBD08",
+                        color: "#fff",
+                        fontWeight: 600,
+                    }}
+                >
                     My Account
                 </Button>
                 <Modal
-                    isOpen={modalIsOpen}
-                    onAfterOpen={afterOpenModal}
-                    shouldCloseOnOverlayClick={true}
-                    shouldCloseOnEsc={true}
-                    onRequestClose={closeModal}
-                    contentLabel="my account">
-                    <div className="modalContainer">
-                        <div className="modalHeader">{renderHeader()}</div>
-                        <div className="modalBody">{renderBody()}</div>
-                        <div className="modalFooter">{renderFooter()}</div>
-                    </div>
+                    title={renderHeader()}
+                    open={modalIsOpen}
+                    onCancel={closeModal}
+                    footer={renderFooter()}
+                    width={700}
+                >
+                    {renderBody()}
                 </Modal>
-                {/* <div
-                className="overlay"
-                style={{display: isOnHold ? "block" : "none"}}></div> */}
             </>
         );
     } else {

@@ -1,18 +1,44 @@
-# Getting Started with Create React App
+# MealPrep Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and migrated to Vite.
+
+## Backend Requirement
+
+**Important**: This frontend application requires a backend server running on `http://localhost:8080`. 
+
+The application expects the following API endpoints:
+- `POST /api/user/get` - User authentication
+- `POST /api/user/register` - User registration  
+- `GET /api/recipe/get/all/` - Recipe data
+- `POST /api/user/update` - Update user info
+- `POST /api/user/logout` - User logout
+
+If the backend server is not running, you may see 404 errors in the browser console, but the frontend will handle these gracefully.
+
+## Environment Configuration
+
+The backend connection is configured via environment variables in `.env`:
+```
+VITE_MEALPREP_BACKEND_PROTOCOL=http
+VITE_MEALPREP_BACKEND_HOSTNAME=localhost  
+VITE_MEALPREP_BACKEND_PORT=8080
+```
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+### `npm run dev`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Runs the app in development mode using Vite.\
+Open [http://localhost:5173](http://localhost:5173) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
+
+### `npm start`
+
+Legacy command - use `npm run dev` instead.
 
 ### `npm test`
 
@@ -21,7 +47,7 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
+Builds the app for production to the `dist` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.\

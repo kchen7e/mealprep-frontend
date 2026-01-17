@@ -1,51 +1,56 @@
-import React, {useEffect, useState} from "react";
-import Modal from "react-modal";
-import { Button } from "antd";
-import{ CloseOutlined} from '@ant-design/icons';
+import React, { useEffect, useState } from "react";
+import { Button, Modal } from "antd";
 
+// Semantic UI color mapping
+const colorMap: Record<string, { bg: string; border: string; hover: string }> = {
+    orange: { bg: "#F2711C", border: "#F2711C", hover: "#e8590c" },
+    yellow: { bg: "#FBBD08", border: "#FBBD08", hover: "#eaae00" },
+    olive: { bg: "#B5CC18", border: "#B5CC18", hover: "#a7bd0d" },
+};
 
-function ModalMenu({modalButton, renderers}) {
-    Modal.setAppElement("#root");
+function ModalMenu({ modalButton, renderers }) {
     const [modalIsOpen, setIsOpen] = useState(false);
     const [finishLoadingMenu, setfinishLoadingMenu] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+
+    const colors = colorMap[modalButton.colour] || colorMap.yellow;
 
     useEffect(() => {
-        setfinishLoadingMenu(!finishLoadingMenu);
+        setfinishLoadingMenu(true);
     }, []);
 
     function openModal() {
         setIsOpen(true);
     }
 
-    function afterOpenModal() {
-        // references are now sync'd and can be accessed.
-        // subtitle.style.color = "blue";
-    }
-
     function closeModal() {
         setIsOpen(false);
     }
+
     return (
         <>
             <Button
-                color={modalButton.colour}
                 onClick={openModal}
-                className={finishLoadingMenu ? "" : "disabled"}>
+                disabled={!finishLoadingMenu}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                style={{
+                    backgroundColor: isHovered ? colors.hover : colors.bg,
+                    borderColor: colors.border,
+                    color: "#fff",
+                    fontWeight: 600,
+                }}
+            >
                 {modalButton.content}
             </Button>
             <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                contentLabel="Menu">
-                <div className="modalContainer">
-                    <div className="modalHeader">
-                        <CloseOutlined name="close" size="large" onClick={closeModal} />
-                        {renderers.header()}
-                    </div>
-                    <div className="modalBody">{renderers.body()}</div>
-                    <div className="modalFooter">{renderers.footer()}</div>
-                </div>
+                title={renderers.header()}
+                open={modalIsOpen}
+                onCancel={closeModal}
+                footer={renderers.footer()}
+                width={800}
+            >
+                {renderers.body()}
             </Modal>
         </>
     );

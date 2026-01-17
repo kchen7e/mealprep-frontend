@@ -1,31 +1,25 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Day from "./Day";
 import Account from "../Account/Account";
 import ModalShoppingList from "../ShoppingList/ModalShoppingList";
-import {getRecipes} from "../../service/RecipeService";
-import {defaultRecipeData} from "../../static/static";
+import { getRecipes } from "../../service/RecipeService";
+import { defaultRecipeData } from "../../static/constants";
 
 function Week() {
     const initialSelection = {
-        0: {breakfast: [], lunch: [], dinner: []},
-        1: {breakfast: [], lunch: [], dinner: []},
-        2: {breakfast: [], lunch: [], dinner: []},
-        3: {breakfast: [], lunch: [], dinner: []},
-        4: {breakfast: [], lunch: [], dinner: []},
-        5: {breakfast: [], lunch: [], dinner: []},
-        6: {breakfast: [], lunch: [], dinner: []},
+        0: { breakfast: [], lunch: [], dinner: [] },
+        1: { breakfast: [], lunch: [], dinner: [] },
+        2: { breakfast: [], lunch: [], dinner: [] },
+        3: { breakfast: [], lunch: [], dinner: [] },
+        4: { breakfast: [], lunch: [], dinner: [] },
+        5: { breakfast: [], lunch: [], dinner: [] },
+        6: { breakfast: [], lunch: [], dinner: [] },
     };
 
     const selectedRecipes = useRef(initialSelection);
     const getInitialRecipeData = () => {
-        if (
-            localStorage.getItem("recipeData") &&
-            JSON.parse(localStorage.getItem("recipeData")).data
-        ) {
-            return JSON.parse(localStorage.getItem("recipeData"));
-        } else {
-            return defaultRecipeData;
-        }
+        const recipeData = localStorage.getItem("recipeData");
+        return recipeData ? JSON.parse(recipeData) : defaultRecipeData;
     };
     const initialRecipeData = getInitialRecipeData();
     const [recipeData, setRecipeData] = useState(initialRecipeData);

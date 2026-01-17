@@ -1,16 +1,19 @@
 import React from "react";
-import {Dropdown} from "antd";
-import {CountryOptions} from "../../static/static";
+import { Select } from "antd";
+import { CountryOptions } from "../../static/constants";
 
-const CountryDropDown = () => (
-    <Dropdown
-        name="country"
-        clearable
-        fluid
-        search
-        selection
-        options={CountryOptions}
+const CountryDropDown = ({ value, onChange }) => (
+    <Select
         placeholder="Select Country"
+        showSearch
+        allowClear
+        style={{ width: '100%' }}
+        options={CountryOptions}
+        value={value}
+        onChange={onChange}
+        filterOption={(input, option) =>
+            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+        }
     />
 );
 

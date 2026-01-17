@@ -1,13 +1,11 @@
-import {downloadUser, updateUser} from "./BackendAPI";
+import { downloadUser, updateUser } from "./BackendAPI";
 import _ from "lodash";
 
 export function getUserInfo(userName) {
     const result = downloadUser(userName)
         .then((userData) => {
             if (userData) {
-                const noNullData = _.mapValues(userData, (v) =>
-                    v === null ? "" : v
-                );
+                const noNullData = _.mapValues(userData, (v) => (v === null ? "" : v));
                 return noNullData;
             } else {
                 return null;
@@ -35,9 +33,7 @@ export async function registerUser(userName, token) {
     const result = downloadUser(userName)
         .then((userData) => {
             if (userData) {
-                const noNullData = _.mapValues(userData, (v) =>
-                    v === null ? "" : v
-                );
+                const noNullData = _.mapValues(userData, (v) => (v === null ? "" : v));
                 return noNullData;
             } else {
                 return null;

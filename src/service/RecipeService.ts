@@ -1,12 +1,11 @@
 // import { Recipes, MyRecipes } from "../static/static";
-import {downloadRecipes} from "./BackendAPI";
-import {REFRESH_INTERVAL} from "../static/static";
+import { downloadRecipes } from "./BackendAPI";
+import { REFRESH_INTERVAL } from "../static/constants";
 
 export async function getRecipes(recipeData) {
     if (
         !recipeData.lastRetrieval ||
-        Math.round(Date.now() / 1000) - +recipeData.lastRetrieval >
-            REFRESH_INTERVAL
+        Math.round(Date.now() / 1000) - +recipeData.lastRetrieval > REFRESH_INTERVAL
     ) {
         await downloadRecipes().then((response) => {
             recipeData.data.breakfast.length = 0;

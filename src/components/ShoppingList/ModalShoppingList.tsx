@@ -1,34 +1,21 @@
 import _ from "lodash";
-import React, {useState} from "react";
-import Modal from "react-modal";
-import { Button } from "antd";
-import { ShoppingCartOutlined, CloseOutlined }from '@ant-design/icons';
-import {queryShoppingList} from "../../service/BackendAPI";
+import React, { useState } from "react";
+import { Button, Modal, Table, Typography, Row, Col, Empty } from "antd";
+import { ShoppingCartOutlined } from "@ant-design/icons";
+import { queryShoppingList } from "../../service/BackendAPI";
 
-function ModalShoppingList({list}) {
-    Modal.setAppElement("#root");
+const { Title } = Typography;
+
+function ModalShoppingList({ list }) {
     const [modalIsOpen, setIsOpen] = useState(false);
-    const [ingredientList, setingredientList] = useState(false);
-
-    // useEffect(() => {
-    // setfinishLoadingMenu(!finishLoadingMenu);
-    // }, []);
-
-    function openModal() {
-        setIsOpen(true);
-    }
-
-    function afterOpenModal() {
-        // references are now sync'd and can be accessed.
-        // subtitle.style.color = "blue";
-    }
+    const [ingredientList, setingredientList] = useState<Record<string, string> | null>(null);
 
     function closeModal() {
         setIsOpen(false);
     }
 
     function getShoppingList() {
-        openModal();
+        setIsOpen(true);
         const currentList = sessionStorage.getItem("currentList");
         if (currentList) {
             const currentListObj = JSON.parse(currentList);
@@ -46,62 +33,67 @@ function ModalShoppingList({list}) {
         }
     }
 
-    const renderIngredientTable = () => {
-        const content = [];
-        Object.keys(ingredientList).forEach((key) => {
-            content.push(
-                <tr>
-                    <th>{key}</th>
-                    <td>{ingredientList[key]}</td>
-                </tr>
-            );
-        });
-        const contentWrap = <table>{content}</table>;
-        return contentWrap;
-    };
+    const columns = [
+        {
+            title: "Ingredient",
+            dataIndex: "ingredient",
+            key: "ingredient",
+        },
+        {
+            title: "Amount",
+            dataIndex: "amount",
+            key: "amount",
+        },
+    ];
 
-    function renderList() {
-        if (ingredientList) {
-            return renderIngredientTable();
-        } else {
-            return <p>No Recipe Selected</p>;
-        }
-    }
+    const tableData = ingredientList
+        ? Object.keys(ingredientList).map((key, index) => ({
+              key: index,
+              ingredient: key,
+              amount: ingredientList[key],
+          }))
+        : [];
 
     return (
         <>
             <Button
-                basic
-                color="yellow"
                 onClick={getShoppingList}
-                style={{marginLeft: 20}}>
-                <ShoppingCartOutlined name="shopping cart" size="large" />
+                icon={<ShoppingCartOutlined />}
+                style={{
+                    backgroundColor: "#FBBD08",
+                    borderColor: "#FBBD08",
+                    color: "#fff",
+                    fontWeight: 600,
+                    marginLeft: 20,
+                }}
+            >
                 Get Shopping List
             </Button>
             <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                contentLabel="Menu">
-                <div className="modalContainer">
-                    <div className="modalHeader">
-                        <CloseOutlined name="close" size="large" onClick={closeModal} />
-                        <h2>Shopping List</h2>
-                    </div>
-                    <div className="shoppingListContainer">
-                        <div className="shoppingListContainerLeftPane">
-                            <h2>Your need these Ingredients</h2>
-                            {renderList()}
-                        </div>
-                        <div className="shoppingListContainerRightPane">
-                            <h2>
-                                Recommended to buy these in your local store
-                            </h2>
-                        </div>
-                    </div>
-                    {/* <div className="modalBody">{renderers.body()}</div> */}
-                    {/* <div className="modalFooter">{renderers.footer()}</div> */}
-                </div>
+                title="Shopping List"
+                open={modalIsOpen}
+                onCancel={closeModal}
+                footer={null}
+                width={800}
+            >
+                <Row gutter={24}>
+                    <Col span={12}>
+                        <Title level={4}>You need these Ingredients</Title>
+                        {ingredientList ? (
+                            <Table
+                                columns={columns}
+                                dataSource={tableData}
+                                pagination={false}
+                                size="small"
+                            />
+                        ) : (
+                            <Empty description="No Recipe Selected" />
+                        )}
+                    </Col>
+                    <Col span={12}>
+                        <Title level={4}>Recommended to buy these in your local store</Title>
+                    </Col>
+                </Row>
             </Modal>
         </>
     );

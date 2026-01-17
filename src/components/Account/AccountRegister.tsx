@@ -1,11 +1,8 @@
-import React, {useState, useEffect} from "react";
-import Modal from "react-modal";
-import _ from "lodash";
-import { Button, Dropdown } from "antd";
-import {CloseOutlined, UserOutlined} from '@ant-design/icons';
-import {UserInfo} from "../../static/static";
-import {CountryOptions} from "../../static/static";
-import {downloadUser, registerAccount} from "../../service/BackendAPI";
+import React, { useState } from "react";
+import { Button, Select, Form, Input, Space, Modal } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { DefaultUserInfo, CountryOptions } from "../../static/constants";
+import { downloadUser, registerAccount } from "../../service/BackendAPI";
 import Cookies from "js-cookie";
 
 function AccountRegister() {
@@ -14,20 +11,21 @@ function AccountRegister() {
     const [emailRequired, setemailRequired] = useState(false);
     const [passwordRequired, setpasswordRequired] = useState(false);
     const [countryRequired, setcountryRequired] = useState(false);
-    Modal.setAppElement("#root");
 
-    const [userInfoUpdated, setuserInfoUpdated] = useState({...UserInfo});
+    const [userInfoUpdated, setuserInfoUpdated] = useState({ ...DefaultUserInfo });
 
     const CountryDropDown = () => (
-        <Dropdown
-            name="country"
-            fluid
-            search
-            selection
-            options={CountryOptions}
+        <Select
             placeholder="Select Country"
+            showSearch
+            allowClear
+            style={{ width: '100%' }}
+            options={CountryOptions}
             value={userInfoUpdated.country ? userInfoUpdated.country : "au"}
             onChange={handleCountryChange}
+            filterOption={(input, option) =>
+                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
         />
     );
 
@@ -56,10 +54,10 @@ function AccountRegister() {
         }
     }
 
-    function handleCountryChange(event, data) {
+    function handleCountryChange(value) {
         setuserInfoUpdated((userInfoUpdated) => ({
             ...userInfoUpdated,
-            country: data.value,
+            country: value,
         }));
     }
 
@@ -73,9 +71,9 @@ function AccountRegister() {
             registerAccount(userInfoUpdated)
                 .then((data) => {
                     if (data) {
-                        Cookies.set("userName", data.userName, {expires: 30});
-                        Cookies.set("userToken", data.token, {expires: 30});
-                        window.location.reload(false);
+                        Cookies.set("userName", data.userName, { expires: 30 });
+                        Cookies.set("userToken", data.token, { expires: 30 });
+                        window.location.reload();
                     } else {
                         console.log("register account failed");
                         alert("user name taken, please choose another one");
@@ -120,7 +118,7 @@ function AccountRegister() {
                         Cookies.set("userToken", userInfoOnServer.token, {
                             expires: 30,
                         });
-                        window.location.reload(false);
+                        window.location.reload();
                     } else {
                         alert("incorrect user name and password combination");
                     }
@@ -132,75 +130,66 @@ function AccountRegister() {
     }
 
     function renderHeader() {
-        return (
-            <>
-                <CloseOutlined name="close" size="large" onClick={closeModal} />
-                <h2>Welcome to MealPrep</h2>
-            </>
-        );
+        return "Welcome to MealPrep";
     }
 
     function renderBody() {
         return (
             <>
-                <div className="ui form" onSubmit={registerUser}>
-                    <div className="two fields">
-                        <div
-                            className={
-                                userNameRequired
-                                    ? "error field required"
-                                    : "field required"
-                            }>
-                            <label>User Name</label>
-                            <input
+                <Form layout="vertical">
+                    <div style={{ display: 'flex', gap: '16px' }}>
+                        <Form.Item 
+                            label="User Name" 
+                            required
+                            validateStatus={userNameRequired ? "error" : ""}
+                            style={{ flex: 1 }}
+                        >
+                            <Input
                                 placeholder="alphanumberic, 12 digits max."
-                                type="text"
-                                onChange={onTextInputChange}
                                 name="userName"
+                                onChange={onTextInputChange}
                             />
-                        </div>
-                        <div
-                            className={
-                                emailRequired
-                                    ? "error field required"
-                                    : "field required"
-                            }>
-                            <label>Email</label>
-                            <input
+                        </Form.Item>
+                        <Form.Item 
+                            label="Email" 
+                            required
+                            validateStatus={emailRequired ? "error" : ""}
+                            style={{ flex: 1 }}
+                        >
+                            <Input
                                 placeholder="a.smith@example.com"
-                                type="text"
-                                onChange={onTextInputChange}
                                 name="email"
-                            />
-                        </div>
-                    </div>
-                    <div className="two fields">
-                        <div
-                            className={
-                                passwordRequired
-                                    ? "error field required"
-                                    : "field required"
-                            }>
-                            <label>Password</label>
-                            <input
-                                name="password"
-                                type="password"
                                 onChange={onTextInputChange}
-                                placeholder="min. 6 digits, numbers and letters"
                             />
-                        </div>
-
-                        <div
-                            className={
-                                countryRequired
-                                    ? "error field required"
-                                    : "field required"
-                            }>
-                            <label>Coutry/Region*</label>
-                            <CountryDropDown />
-                        </div>
+                        </Form.Item>
                     </div>
-                </div>
+                    <div style={{ display: 'flex', gap: '16px' }}>
+                        <Form.Item
+                            label="Password"
+                            required
+                            validateStatus={passwordRequired ? "error" : ""}
+                            style={{ flex: 1 }}
+                        >
+                            <Input.Password
+                                placeholder="min. 6 digits, numbers and letters"
+                                onChange={(e) => {
+                                    setuserInfoUpdated((prev) => ({
+                                        ...prev,
+                                        password: e.target.value,
+                                    }));
+                                }}
+                            />
+                        </Form.Item>
+                        <Form.Item 
+                            label="Country/Region" 
+                            required
+                            validateStatus={countryRequired ? "error" : ""}
+                            style={{ flex: 1 }}
+                        >
+                            <CountryDropDown />
+                        </Form.Item>
+                    </div>
+                </Form>
             </>
         );
     }
@@ -208,70 +197,62 @@ function AccountRegister() {
     function renderFooter() {
         return (
             <>
-                <div className="ui buttons">
-                    <button
-                        className={
-                            userInfoUpdated.userName && userInfoUpdated.password
-                                ? "ui button active"
-                                : "ui button disabled"
-                        }
-                        onClick={loginUser}>
+                <Space.Compact style={{ width: '100%' }}>
+                    <Button
+                        disabled={!(userInfoUpdated.userName && userInfoUpdated.password)}
+                        onClick={loginUser}
+                        style={{ flex: 1 }}
+                    >
                         Login
-                    </button>
-                    <div className="or"></div>
-                    <button
-                        className={
-                            userInfoUpdated.userName &&
-                            userInfoUpdated.password &&
-                            userInfoUpdated.email &&
-                            userInfoUpdated.country
-                                ? "ui positive button active"
-                                : "ui positive button disabled"
-                        }
-                        onClick={registerUser}>
+                    </Button>
+                    <Button
+                        type="primary"
+                        disabled={!(userInfoUpdated.userName &&
+                                  userInfoUpdated.password &&
+                                  userInfoUpdated.email &&
+                                  userInfoUpdated.country)}
+                        onClick={registerUser}
+                        style={{ flex: 1 }}
+                    >
                         Register
-                    </button>
-                </div>
+                    </Button>
+                </Space.Compact>
             </>
         );
     }
 
     function openModal() {
-        setuserInfoUpdated({...UserInfo});
+        setuserInfoUpdated({ ...DefaultUserInfo });
         setIsOpen(true);
     }
 
-    function afterOpenModal() {
-        // references are now sync'd and can be accessed.
-        // subtitle.style.color = "blue";
-    }
-
     function closeModal() {
-        setuserInfoUpdated({...UserInfo});
+        setuserInfoUpdated({ ...DefaultUserInfo });
         setIsOpen(false);
     }
 
     return (
         <>
-            <div className="ui buttons">
-                <Button basic color="yellow" onClick={openModal}>
-                    <UserOutlined name="user" size="large" />
-                    Register/Login
-                </Button>
-
-            </div>
+            <Button
+                onClick={openModal}
+                icon={<UserOutlined />}
+                style={{
+                    backgroundColor: "#FBBD08",
+                    borderColor: "#FBBD08",
+                    color: "#fff",
+                    fontWeight: 600,
+                }}
+            >
+                Register/Login
+            </Button>
             <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                shouldCloseOnOverlayClick={true}
-                shouldCloseOnEsc={true}
-                onRequestClose={closeModal}
-                contentLabel="register account">
-                <div className="modalContainer">
-                    <div className="modalHeader">{renderHeader()}</div>
-                    <div className="modalBody">{renderBody()}</div>
-                    <div className="modalFooter">{renderFooter()}</div>
-                </div>
+                title={renderHeader()}
+                open={modalIsOpen}
+                onCancel={closeModal}
+                footer={renderFooter()}
+                width={600}
+            >
+                {renderBody()}
             </Modal>
         </>
     );

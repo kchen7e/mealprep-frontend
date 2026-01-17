@@ -4,23 +4,27 @@ import Lunch from "../Meal/Lunch";
 import Dinner from "../Meal/Dinner";
 
 function Day(props) {
+    // Add defensive checks to prevent errors during initial render
+    const recipes = props.recipes || { breakfast: [], lunch: [], dinner: [] };
+    const selectedRecipe = props.selectedRecipe || { breakfast: [], lunch: [], dinner: [] };
+
     return (
         <>
             <div className="dayContainer">
                 <h4>Day {props.day}</h4>
                 <Breakfast
-                    recipes={props.recipes.breakfast}
-                    selectedRecipe={props.selectedRecipe.breakfast}
+                    recipes={recipes.breakfast}
+                    selectedRecipe={selectedRecipe.breakfast}
                     day={props.day}
                 />
                 <Lunch
-                    recipes={props.recipes.lunch}
-                    selectedRecipe={props.selectedRecipe.lunch}
+                    recipes={recipes.lunch}
+                    selectedRecipe={selectedRecipe.lunch}
                     day={props.day}
                 />
                 <Dinner
-                    recipes={props.recipes.dinner}
-                    selectedRecipe={props.selectedRecipe.dinner}
+                    recipes={recipes.dinner}
+                    selectedRecipe={selectedRecipe.dinner}
                     day={props.day}
                 />
             </div>
