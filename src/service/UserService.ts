@@ -1,8 +1,9 @@
 import { downloadUser, updateUser } from "./BackendAPI";
+import type { UserInfo } from "../static/Type.d";
 import _ from "lodash";
 
-export function getUserInfo(userName) {
-    const result = downloadUser(userName)
+export function getUserInfo(userInfo: Partial<UserInfo>) {
+    const result = downloadUser(userInfo)
         .then((userData) => {
             if (userData) {
                 const noNullData = _.mapValues(userData, (v) => (v === null ? "" : v));
@@ -11,26 +12,26 @@ export function getUserInfo(userName) {
                 return null;
             }
         })
-        .catch((err) => {
+        .catch((err: any) => {
             console.log(err.message);
             throw err;
         });
     return result;
 }
 
-export async function updateUserInfo(updatedUserInfo) {
-    const result = updateUser(JSON.stringify(updatedUserInfo))
+export async function updateUserInfo(updatedUserInfo: Partial<UserInfo>) {
+    const result = updateUser(updatedUserInfo)
         .then((response) => {
             return response;
         })
-        .catch((err) => {
+        .catch((err: any) => {
             throw err;
         });
     return result;
 }
 
-export async function registerUser(userName, token) {
-    const result = downloadUser(userName)
+export async function registerUser(userInfo: Partial<UserInfo>, _token: string) {
+    const result = downloadUser(userInfo)
         .then((userData) => {
             if (userData) {
                 const noNullData = _.mapValues(userData, (v) => (v === null ? "" : v));
@@ -39,7 +40,7 @@ export async function registerUser(userName, token) {
                 return null;
             }
         })
-        .catch((err) => {
+        .catch((err: any) => {
             console.log(err.message);
             throw err;
         });

@@ -1,5 +1,6 @@
 import axios from "axios";
 import httpStatus from "http-status";
+import type { UserInfo } from "../static/Type.d";
 
 const {
     VITE_MEALPREP_BACKEND_HOSTNAME,
@@ -14,7 +15,7 @@ const URL = VITE_MEALPREP_BACKEND_HOSTNAME || 'localhost';
 export async function downloadRecipes() {
     return axios({
         method: "get",
-        url: `${PROTOCOL}://${URL}:${PORT}/api/recipe/get/all/`,
+        url: `${PROTOCOL}://${URL}:${PORT}/api/recipe/get/all`,
         responseType: "json",
         timeout: 5000, // 5 second timeout
     })
@@ -35,7 +36,7 @@ export async function downloadRecipes() {
         });
 }
 
-export async function downloadMyRecipes(userName, token) {
+export async function downloadMyRecipes(_userName: string, _token: string) {
     const breakfastRecipes: any[] = [];
     const lunchRecipes: any[] = [];
     const dinnerRecipes: any[] = [];
@@ -54,7 +55,7 @@ export async function downloadMyRecipes(userName, token) {
         });
 
         if (response.data && Array.isArray(response.data)) {
-            response.data.forEach((element) => {
+            response.data.forEach((element: any) => {
                 const recipe = element.json || element;
                 if (recipe.mealType === "breakfast") {
                     breakfastRecipes.push(recipe);
@@ -65,7 +66,7 @@ export async function downloadMyRecipes(userName, token) {
                 }
             });
         }
-    } catch (error) {
+    } catch (error: any) {
         console.error("Failed to download my recipes:", error.message);
         if (error.code === 'ECONNREFUSED' || error.response?.status === 404) {
             console.warn("Backend server appears to be offline - using empty recipe data");
@@ -73,11 +74,11 @@ export async function downloadMyRecipes(userName, token) {
             throw error;
         }
     }
-    
+
     return recipes;
 }
 
-export async function downloadUser(userInfo) {
+export async function downloadUser(userInfo: Partial<UserInfo>) {
     return axios({
         method: "post",
         url: `${PROTOCOL}://${URL}:${PORT}/api/user/get`,
@@ -103,7 +104,7 @@ export async function downloadUser(userInfo) {
                 return null;
             }
         })
-        .catch((error) => {
+        .catch((error: any) => {
             console.error("Backend API Error:", error.message);
             if (error.code === 'ECONNREFUSED' || error.response?.status === 404) {
                 console.warn("Backend server appears to be offline or endpoint not found");
@@ -113,7 +114,7 @@ export async function downloadUser(userInfo) {
         });
 }
 
-export async function queryShoppingList(list) {
+export async function queryShoppingList(list: any) {
     return axios({
         method: "post",
         url: `${PROTOCOL}://${URL}:${PORT}/api/shopping/get`,
@@ -128,18 +129,19 @@ export async function queryShoppingList(list) {
                 return response.data;
             }
         })
-        .catch((error) => {
+        .catch((error: any) => {
             console.log("error is ", error);
         });
 }
 
-export function updateUser(userInfoUpdated) {
+export function updateUser(userInfoUpdated: Partial<UserInfo>) {
     return axios({
         method: "patch",
         url: `${PROTOCOL}://${URL}:${PORT}/api/user/update`,
         data: userInfoUpdated,
         headers: {
             "Content-Type": "application/json",
+            Authorization: userInfoUpdated.token ? `Bearer ${userInfoUpdated.token}` : "",
         },
     })
         .then((response) => {
@@ -149,12 +151,12 @@ export function updateUser(userInfoUpdated) {
                 console.log("nothing");
             }
         })
-        .catch((error) => {
+        .catch((error: any) => {
             console.log("error is ", error);
         });
 }
 
-export async function registerAccount(userInfo) {
+export async function registerAccount(userInfo: Partial<UserInfo>) {
     // Backend expects password to be Base64 encoded
     const payload = {
         ...userInfo,
@@ -180,7 +182,7 @@ export async function registerAccount(userInfo) {
                 return null;
             }
         })
-        .catch((error) => {
+        .catch((error: any) => {
             console.error("Registration failed:", error.message);
             if (error.code === 'ECONNREFUSED' || error.response?.status === 404) {
                 console.warn("Backend server appears to be offline");
@@ -190,12 +192,12 @@ export async function registerAccount(userInfo) {
         });
 }
 
-export async function logOutUser(userName, token) {
+export async function logOutUser(userName: string, _token: string) {
     axios({
         method: "post",
         url: `${PROTOCOL}://${URL}:${PORT}/api/user/logout`,
         responseType: "json",
-        data: userName,
+        data: { userName },
         headers: {
             "Content-Type": "application/json",
         },

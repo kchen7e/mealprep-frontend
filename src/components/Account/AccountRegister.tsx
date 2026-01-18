@@ -72,7 +72,9 @@ function AccountRegister() {
                 .then((data) => {
                     if (data) {
                         Cookies.set("userName", data.userName, { expires: 30 });
-                        Cookies.set("userToken", data.token, { expires: 30 });
+                        // Strip "Bearer " prefix before saving
+                        const token = data.token?.replace(/^Bearer\s+/i, "") || "";
+                        Cookies.set("userToken", token, { expires: 30 });
                         window.location.reload();
                     } else {
                         console.log("register account failed");
@@ -115,7 +117,9 @@ function AccountRegister() {
                         Cookies.set("userName", userInfoOnServer.userName, {
                             expires: 30,
                         });
-                        Cookies.set("userToken", userInfoOnServer.token, {
+                        // Strip "Bearer " prefix before saving
+                        const token = userInfoOnServer.token?.replace(/^Bearer\s+/i, "") || "";
+                        Cookies.set("userToken", token, {
                             expires: 30,
                         });
                         window.location.reload();

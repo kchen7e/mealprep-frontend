@@ -1,8 +1,8 @@
-// import { Recipes, MyRecipes } from "../static/static";
 import { downloadRecipes } from "./BackendAPI";
 import { REFRESH_INTERVAL } from "../static/constants";
+import type { RecipeData, Recipe } from "../static/Type.d";
 
-export async function getRecipes(recipeData) {
+export async function getRecipes(recipeData: RecipeData) {
     if (
         !recipeData.lastRetrieval ||
         Math.round(Date.now() / 1000) - +recipeData.lastRetrieval > REFRESH_INTERVAL
@@ -14,7 +14,7 @@ export async function getRecipes(recipeData) {
             recipeData.data.snacks.length = 0;
             recipeData.data.dessert.length = 0;
             if (response.data) {
-                response.data.forEach((recipe) => {
+                response.data.forEach((recipe: Recipe) => {
                     if (recipe.mealType.includes("BREAKFAST")) {
                         recipeData.data.breakfast.push(recipe);
                     }
@@ -34,7 +34,7 @@ export async function getRecipes(recipeData) {
                         recipeData.data.dinner.push(recipe);
                     }
                 });
-                recipeData.lastRetrieval = Math.round(Date.now() / 1000);
+                recipeData.lastRetrieval = String(Math.round(Date.now() / 1000));
             }
         });
     }
@@ -42,8 +42,9 @@ export async function getRecipes(recipeData) {
     return recipeData;
 }
 
-function getMyRecipes(userName, token) {
+function getMyRecipes(_userName: string, _token: string) {
     const downloadedRecipes = downloadRecipes();
-    const myRecipes = [];
-    myRecipes.push(...downloadedRecipes);
+    const myRecipes: Recipe[] = [];
+    // TODO: This function is incomplete - downloadRecipes returns a Promise
+    console.log(downloadedRecipes, myRecipes);
 }
