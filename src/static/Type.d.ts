@@ -1,12 +1,12 @@
 // User-related types
 interface UserInfo {
-    userName: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    country: string;
-    token: string;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password?: string;
+  country: string;
+  token: string;
 }
 
 // Recipe-related types
@@ -18,7 +18,7 @@ interface Recipe {
     mealType: string[];
 }
 
-type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snacks' | 'dessert';
+type MealType = "breakfast" | "lunch" | "dinner" | "snacks" | "dessert";
 
 interface RecipesByMeal {
     breakfast: Recipe[];
@@ -41,16 +41,17 @@ interface CountryOption {
     label: string;
 }
 
-// Day selection types (for meal planning)
 interface DayMealSelection {
-    breakfast: Recipe[];
-    lunch: Recipe[];
-    dinner: Recipe[];
+    breakfast: string[];
+    lunch: string[];
+    dinner: string[];
+    snacks: string[];
+    dessert: string[];
 }
 
-interface WeekMealSelection {
-    [dayIndex: number]: DayMealSelection;
-}
+type WeekMealSelection = {
+    [dayIndex in 0 | 1 | 2 | 3 | 4 | 5 | 6]: DayMealSelection;
+};
 
 // API response types
 interface ApiResponse<T> {
@@ -88,7 +89,7 @@ interface ShoppingListResponse {
 // Configuration types
 type RefreshInterval = number;
 
-// Export all types for use across the application
+// Export all types
 export type {
     UserInfo,
     Recipe,
@@ -103,5 +104,5 @@ export type {
     RegistrationResponse,
     ShoppingListItem,
     ShoppingListResponse,
-    RefreshInterval
+    RefreshInterval,
 };

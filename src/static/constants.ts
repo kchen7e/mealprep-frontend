@@ -1,11 +1,11 @@
-import type { 
-    Recipe, 
-    UserInfo, 
-    RecipesByMeal, 
-    RecipeData, 
-    CountryOption, 
-    RefreshInterval 
-} from './Type';
+import type {
+    Recipe,
+    UserInfo,
+    RecipesByMeal,
+    RecipeData,
+    CountryOption,
+    RefreshInterval,
+} from "./Type";
 
 // Recipe arrays
 export const Recipes: Recipe[] = [];

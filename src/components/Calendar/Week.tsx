@@ -1,28 +1,29 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Day from "./Day";
 import Account from "../Account/Account";
 import ModalShoppingList from "../ShoppingList/ModalShoppingList";
 import { getRecipes } from "../../service/RecipeService";
 import { defaultRecipeData } from "../../static/constants";
+import { WeekMealSelection, RecipeData } from "../../static/Type";
 
 function Week() {
-    const initialSelection = {
-        0: { breakfast: [], lunch: [], dinner: [] },
-        1: { breakfast: [], lunch: [], dinner: [] },
-        2: { breakfast: [], lunch: [], dinner: [] },
-        3: { breakfast: [], lunch: [], dinner: [] },
-        4: { breakfast: [], lunch: [], dinner: [] },
-        5: { breakfast: [], lunch: [], dinner: [] },
-        6: { breakfast: [], lunch: [], dinner: [] },
+    const initialSelection: WeekMealSelection = {
+        0: { breakfast: [], lunch: [], dinner: [], snacks: [], dessert: [] },
+        1: { breakfast: [], lunch: [], dinner: [], snacks: [], dessert: [] },
+        2: { breakfast: [], lunch: [], dinner: [], snacks: [], dessert: [] },
+        3: { breakfast: [], lunch: [], dinner: [], snacks: [], dessert: [] },
+        4: { breakfast: [], lunch: [], dinner: [], snacks: [], dessert: [] },
+        5: { breakfast: [], lunch: [], dinner: [], snacks: [], dessert: [] },
+        6: { breakfast: [], lunch: [], dinner: [], snacks: [], dessert: [] },
     };
 
-    const selectedRecipes = useRef(initialSelection);
+    const [selectedRecipes, setSelectedRecipes] = useState<WeekMealSelection>(initialSelection);
     const getInitialRecipeData = () => {
         const recipeData = localStorage.getItem("recipeData");
         return recipeData ? JSON.parse(recipeData) : defaultRecipeData;
     };
-    const initialRecipeData = getInitialRecipeData();
-    const [recipeData, setRecipeData] = useState(initialRecipeData);
+    const initialRecipeData: RecipeData = getInitialRecipeData();
+    const [recipeData, setRecipeData] = useState<RecipeData>(initialRecipeData);
 
     useEffect(() => {
         getRecipes(recipeData).then((result) => {
@@ -41,16 +42,17 @@ function Week() {
             <div className="headerContainer">
                 <Account />
                 <h1>Meal Prep for this Week</h1>
-                <ModalShoppingList list={selectedRecipes.current} />
+                <ModalShoppingList list={selectedRecipes} />
             </div>
             <div className="weekContainer">
-                {[...Array(7)].map((_, i) => {
+                {([0, 1, 2, 3, 4, 5, 6] as const).map((i) => {
                     return (
                         <Day
                             key={i}
                             day={i + 1}
-                            selectedRecipe={selectedRecipes.current[i]}
+                            selectedRecipe={selectedRecipes[i]}
                             recipes={recipeData.data}
+                            setSelectedRecipes={setSelectedRecipes}
                         />
                     );
                 })}

@@ -2,13 +2,26 @@ import React from "react";
 import { Typography, Flex } from "antd";
 import ModalMenu from "./ModalMenu";
 import Recipe from "./Recipe";
+import { Recipe as RecipeType, WeekMealSelection } from "../../static/Type";
 
 const { Title } = Typography;
 
-function LunchMenu(props) {
+interface LunchMenuProps {
+    day: number;
+    recipes: RecipeType[];
+    selectedRecipe: string[];
+    setSelectedRecipes: React.Dispatch<React.SetStateAction<WeekMealSelection>>;
+}
+
+function LunchMenu({
+    day,
+    recipes,
+    selectedRecipe,
+    setSelectedRecipes,
+}: LunchMenuProps) {
     const renderers = {
-        header: renderHeader,
-        body: renderBody,
+        header: () => renderHeader(day),
+        body: () => renderBody(recipes, selectedRecipe, setSelectedRecipes, day),
         footer: renderFooter,
     };
 
@@ -17,25 +30,33 @@ function LunchMenu(props) {
         colour: "yellow",
     };
 
-    function renderHeader() {
+    function renderHeader(day: number) {
         return (
             <>
-                <Title level={4}>Day {props.day}</Title>
+                <Title level={4}>Day {day}</Title>
                 <Title level={3}>Lunch Menu</Title>
             </>
         );
     }
 
-    function renderBody() {
-        if (!props.recipes) return null;
+    function renderBody(
+        recipes: RecipeType[],
+        selectedRecipe: string[],
+        setSelectedRecipes: React.Dispatch<React.SetStateAction<WeekMealSelection>>,
+        day: number
+    ) {
+        if (!recipes) return null;
 
         return (
             <Flex wrap="wrap" gap="middle">
-                {props.recipes.map((recipe) => (
+                {recipes.map((recipe) => (
                     <Recipe
                         key={recipe.recipeName}
                         recipe={recipe}
-                        selectedRecipe={props.selectedRecipe}
+                        selectedRecipe={selectedRecipe}
+                        setSelectedRecipes={setSelectedRecipes}
+                        day={day}
+                        meal="lunch"
                     />
                 ))}
             </Flex>

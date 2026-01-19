@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Select, Form, Input, Space, Modal } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { DefaultUserInfo, CountryOptions } from "../../static/constants";
@@ -19,17 +19,17 @@ function AccountRegister() {
             placeholder="Select Country"
             showSearch
             allowClear
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             options={CountryOptions}
             value={userInfoUpdated.country ? userInfoUpdated.country : "au"}
             onChange={handleCountryChange}
             filterOption={(input, option) =>
-                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
         />
     );
 
-    function onTextInputChange(event) {
+    function onTextInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         event.preventDefault();
         if (event.target.name === "userName") {
             setuserInfoUpdated((userInfoUpdated) => ({
@@ -54,7 +54,7 @@ function AccountRegister() {
         }
     }
 
-    function handleCountryChange(value) {
+    function handleCountryChange(value: string) {
         setuserInfoUpdated((userInfoUpdated) => ({
             ...userInfoUpdated,
             country: value,
@@ -100,7 +100,7 @@ function AccountRegister() {
         }
     }
 
-    function loginUser(event) {
+    function loginUser() {
         if (!userInfoUpdated.userName) {
             setuserNameRequired(!userNameRequired);
         }
@@ -127,7 +127,7 @@ function AccountRegister() {
                         alert("incorrect user name and password combination");
                     }
                 })
-                .catch((error) => {
+                .catch((_: any) => {
                     alert("connection to server error, please try again later");
                 });
         }
@@ -141,9 +141,9 @@ function AccountRegister() {
         return (
             <>
                 <Form layout="vertical">
-                    <div style={{ display: 'flex', gap: '16px' }}>
-                        <Form.Item 
-                            label="User Name" 
+                    <div style={{ display: "flex", gap: "16px" }}>
+                        <Form.Item
+                            label="User Name"
                             required
                             validateStatus={userNameRequired ? "error" : ""}
                             style={{ flex: 1 }}
@@ -154,8 +154,8 @@ function AccountRegister() {
                                 onChange={onTextInputChange}
                             />
                         </Form.Item>
-                        <Form.Item 
-                            label="Email" 
+                        <Form.Item
+                            label="Email"
                             required
                             validateStatus={emailRequired ? "error" : ""}
                             style={{ flex: 1 }}
@@ -167,7 +167,7 @@ function AccountRegister() {
                             />
                         </Form.Item>
                     </div>
-                    <div style={{ display: 'flex', gap: '16px' }}>
+                    <div style={{ display: "flex", gap: "16px" }}>
                         <Form.Item
                             label="Password"
                             required
@@ -184,8 +184,8 @@ function AccountRegister() {
                                 }}
                             />
                         </Form.Item>
-                        <Form.Item 
-                            label="Country/Region" 
+                        <Form.Item
+                            label="Country/Region"
                             required
                             validateStatus={countryRequired ? "error" : ""}
                             style={{ flex: 1 }}
@@ -201,7 +201,7 @@ function AccountRegister() {
     function renderFooter() {
         return (
             <>
-                <Space.Compact style={{ width: '100%' }}>
+                <Space.Compact style={{ width: "100%" }}>
                     <Button
                         disabled={!(userInfoUpdated.userName && userInfoUpdated.password)}
                         onClick={loginUser}
@@ -211,10 +211,14 @@ function AccountRegister() {
                     </Button>
                     <Button
                         type="primary"
-                        disabled={!(userInfoUpdated.userName &&
-                                  userInfoUpdated.password &&
-                                  userInfoUpdated.email &&
-                                  userInfoUpdated.country)}
+                        disabled={
+                            !(
+                                userInfoUpdated.userName &&
+                                userInfoUpdated.password &&
+                                userInfoUpdated.email &&
+                                userInfoUpdated.country
+                            )
+                        }
                         onClick={registerUser}
                         style={{ flex: 1 }}
                     >

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Modal } from "antd";
 
 // Semantic UI color mapping
@@ -8,7 +8,34 @@ const colorMap: Record<string, { bg: string; border: string; hover: string }> = 
     olive: { bg: "#B5CC18", border: "#B5CC18", hover: "#a7bd0d" },
 };
 
-function ModalMenu({ modalButton, renderers }) {
+interface ModalButton {
+    content: string;
+    colour: string;
+}
+
+interface Renderers {
+    header: () => React.ReactNode;
+    body: () => React.ReactNode;
+    footer: () => React.ReactNode;
+}
+
+interface ModalButton {
+    content: string;
+    colour: string;
+}
+
+interface Renderers {
+    header: () => React.ReactNode;
+    body: () => React.ReactNode;
+    footer: () => React.ReactNode;
+}
+
+interface ModalMenuProps {
+    modalButton: ModalButton;
+    renderers: Renderers;
+}
+
+function ModalMenu({ modalButton, renderers }: ModalMenuProps) {
     const [modalIsOpen, setIsOpen] = useState(false);
     const [finishLoadingMenu, setfinishLoadingMenu] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
@@ -49,6 +76,8 @@ function ModalMenu({ modalButton, renderers }) {
                 onCancel={closeModal}
                 footer={renderers.footer()}
                 width={800}
+                styles={{ body: { maxHeight: "60vh", overflowY: "auto" } }}
+                getContainer={() => document.getElementById("root") || document.body}
             >
                 {renderers.body()}
             </Modal>
