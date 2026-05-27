@@ -9,15 +9,16 @@ const {
 } = import.meta.env;
 
 const PROTOCOL = VITE_MEALPREP_BACKEND_PROTOCOL || "http";
-const PORT = VITE_MEALPREP_BACKEND_PORT || "8080";
+const PORT = VITE_MEALPREP_BACKEND_PORT || "";
 const URL = VITE_MEALPREP_BACKEND_HOSTNAME || "localhost";
 
-export const BACKEND_BASE = `${PROTOCOL}://${URL}:${PORT}`;
+const portSuffix = PORT ? `:${PORT}` : "";
+export const BACKEND_BASE = `${PROTOCOL}://${URL}${portSuffix}`;
 
 export async function downloadRecipes() {
     return axios({
         method: "get",
-        url: `${PROTOCOL}://${URL}:${PORT}/api/recipe/get/all`,
+        url: `${BACKEND_BASE}/api/recipe/get/all`,
         responseType: "json",
         timeout: 5000, // 5 second timeout
     })
@@ -51,7 +52,7 @@ export async function downloadMyRecipes(_userName: string, _token: string) {
     try {
         const response = await axios({
             method: "get",
-            url: `${PROTOCOL}://${URL}:${PORT}/api/recipe/get/all`,
+            url: `${BACKEND_BASE}/api/recipe/get/all`,
             responseType: "json",
             timeout: 5000,
         });
@@ -83,7 +84,7 @@ export async function downloadMyRecipes(_userName: string, _token: string) {
 export async function downloadUser(userInfo: Partial<UserInfo>) {
     return axios({
         method: "post",
-        url: `${PROTOCOL}://${URL}:${PORT}/api/user/get`,
+        url: `${BACKEND_BASE}/api/user/get`,
         data: {
             userName: userInfo.userName,
             // Backend expects password to be Base64 encoded
@@ -119,7 +120,7 @@ export async function downloadUser(userInfo: Partial<UserInfo>) {
 export async function queryShoppingList(list: any) {
     return axios({
         method: "post",
-        url: `${PROTOCOL}://${URL}:${PORT}/api/shopping/get`,
+        url: `${BACKEND_BASE}/api/shopping/get`,
         responseType: "json",
         data: list,
         headers: {
@@ -147,7 +148,7 @@ export function updateUser(userInfoUpdated: Partial<UserInfo>) {
 
     return axios({
         method: "patch",
-        url: `${PROTOCOL}://${URL}:${PORT}/api/user/update`,
+        url: `${BACKEND_BASE}/api/user/update`,
         data: payload,
         headers: {
             "Content-Type": "application/json",
@@ -177,7 +178,7 @@ export async function registerAccount(userInfo: Partial<UserInfo>) {
     console.log("Registration payload:", JSON.stringify(payload));
     return axios({
         method: "post",
-        url: `${PROTOCOL}://${URL}:${PORT}/api/user/register`,
+        url: `${BACKEND_BASE}/api/user/register`,
         responseType: "json",
         data: payload,
         headers: {
@@ -207,7 +208,7 @@ export async function registerAccount(userInfo: Partial<UserInfo>) {
 export async function logOutUser(userName: string, token: string) {
     return axios({
         method: "post",
-        url: `${PROTOCOL}://${URL}:${PORT}/api/user/logout`,
+        url: `${BACKEND_BASE}/api/user/logout`,
         responseType: "json",
         data: { userName },
         headers: {

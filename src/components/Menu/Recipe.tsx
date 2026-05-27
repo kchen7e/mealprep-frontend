@@ -6,8 +6,13 @@ import { BACKEND_BASE } from "../../service/BackendAPI";
 
 const { Text } = Typography;
 
-function getRecipeImage(recipeName: string): string {
-    return `${BACKEND_BASE}/api/recipe/${encodeURIComponent(recipeName)}/image`;
+const { VITE_IMAGE_CDN_URL } = import.meta.env;
+
+function getRecipeImage(recipe: Recipe): string {
+    if (VITE_IMAGE_CDN_URL && recipe.imageUrl) {
+        return `${VITE_IMAGE_CDN_URL}/${recipe.imageUrl}`;
+    }
+    return `${BACKEND_BASE}/api/recipe/${encodeURIComponent(recipe.recipeName)}/image`;
 }
 
 interface RecipeProps {
@@ -68,7 +73,7 @@ function Recipe({
             cover={
                 <Image
                     alt={recipe.displayName}
-                    src={getRecipeImage(recipe.recipeName)}
+                    src={getRecipeImage(recipe)}
                     preview={false}
                     height={100}
                     style={{ objectFit: "cover" }}

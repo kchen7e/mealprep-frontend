@@ -34,6 +34,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:prod": "vite build && tar -czf MealPrep-frontend-$(node -p \"require('./package.json').version\").tar.gz -C build/ .",
     "preview": "vite preview",
     "format": "prettier --write src/"
   }
