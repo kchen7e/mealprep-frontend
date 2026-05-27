@@ -1,11 +1,11 @@
 import React from "react";
 import LunchMenu from "../Menu/LunchMenu";
-import type { Recipe, WeekMealSelection } from "../../static/Type";
+import type { Recipe, RecipeRef, WeekMealSelection } from "../../static/Type";
 
 interface LunchProps {
     day: number;
     recipes: Recipe[];
-    selectedRecipe: string[];
+    selectedRecipe: RecipeRef[];
     setSelectedRecipes: React.Dispatch<React.SetStateAction<WeekMealSelection>>;
 }
 

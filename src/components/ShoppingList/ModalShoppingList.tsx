@@ -2,7 +2,7 @@ import _ from "lodash";
 import { useState } from "react";
 import { Button, Modal, Table, Typography, Row, Col, Empty } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-import type { ShoppingListItem, WeekMealSelection } from "../../static/Type";
+import type { ShoppingListItem, UnitData, WeekMealSelection } from "../../static/Type";
 import { queryShoppingList } from "../../service/BackendAPI";
 
 const { Title } = Typography;
@@ -33,7 +33,7 @@ function ModalShoppingList({ list }: ModalShoppingListProps) {
 
     if (!_.isEmpty(list)) {
       try {
-        const data = await queryShoppingList(JSON.stringify(list)) as ShoppingListItem | null;
+        const data = await queryShoppingList(list) as ShoppingListItem | null;
         if (data) {
           sessionStorage.setItem("currentList", JSON.stringify(list));
           setIngredientList(data);
@@ -50,11 +50,17 @@ function ModalShoppingList({ list }: ModalShoppingListProps) {
     amount: string | number;
   }
 
+  function formatAmount(unit: UnitData): string {
+    const m = unit.measure;
+    const displayMeasure = m === Math.floor(m) ? m.toString() : m.toString();
+    return `${displayMeasure} ${unit.type.toLowerCase()}`;
+  }
+
   const tableData: TableDataItem[] = ingredientList
     ? Object.keys(ingredientList).map((key, index) => ({
         key: index,
         ingredient: key,
-        amount: ingredientList[key],
+        amount: formatAmount(ingredientList[key]),
       }))
     : [];
 

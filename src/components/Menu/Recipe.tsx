@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { Card, Image, Button, Typography } from "antd";
 import { CheckOutlined, PlusOutlined } from "@ant-design/icons";
-// 1. Rename image variable: meal → mealImage (to avoid conflict with props.meal)
-import mealImage from "../../static/meal.jpg";
-// 2. Use import type for types (to avoid conflict with Recipe component name)
-import type { Recipe, WeekMealSelection, MealType, DayMealSelection } from "../../static/Type";
+import type { Recipe, RecipeRef, WeekMealSelection, MealType, DayMealSelection } from "../../static/Type";
+import { BACKEND_BASE } from "../../service/BackendAPI";
 
 const { Text } = Typography;
 
+function getRecipeImage(recipeName: string): string {
+    return `${BACKEND_BASE}/api/recipe/${encodeURIComponent(recipeName)}/image`;
+}
+
 interface RecipeProps {
     recipe: Recipe;
-    selectedRecipe: string[];
+    selectedRecipe: RecipeRef[];
     setSelectedRecipes: React.Dispatch<React.SetStateAction<WeekMealSelection>>;
     day: number;
     meal: MealType;
@@ -24,7 +26,7 @@ function Recipe({
     day,
     meal, // No longer conflicts with image variable; TS can correctly identify usage
 }: RecipeProps) {
-    const initialStatus = selectedRecipe.includes(recipe.recipeName);
+    const initialStatus = selectedRecipe.some((r) => r.recipeName === recipe.recipeName);
     const [selected, setSelected] = useState(initialStatus);
 
     const handleClick = () => {
@@ -35,13 +37,13 @@ function Recipe({
             const newMealRecipes = [...newDaySelection[meal]]; // props.meal is used correctly
 
             if (selected) {
-                const recipeIndex = newMealRecipes.indexOf(recipe.recipeName);
+                const recipeIndex = newMealRecipes.findIndex((r) => r.recipeName === recipe.recipeName);
                 if (recipeIndex > -1) {
                     newMealRecipes.splice(recipeIndex, 1);
                 }
             } else {
-                if (!newMealRecipes.includes(recipe.recipeName)) {
-                    newMealRecipes.push(recipe.recipeName);
+                if (!newMealRecipes.some((r) => r.recipeName === recipe.recipeName)) {
+                    newMealRecipes.push({ recipeName: recipe.recipeName, displayName: recipe.displayName });
                 }
             }
 
@@ -66,7 +68,7 @@ function Recipe({
             cover={
                 <Image
                     alt={recipe.displayName}
-                    src={mealImage} // 4. Use the renamed image variable
+                    src={getRecipeImage(recipe.recipeName)}
                     preview={false}
                     height={100}
                     style={{ objectFit: "cover" }}

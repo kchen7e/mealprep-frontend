@@ -12,6 +12,8 @@ const PROTOCOL = VITE_MEALPREP_BACKEND_PROTOCOL || "http";
 const PORT = VITE_MEALPREP_BACKEND_PORT || "8080";
 const URL = VITE_MEALPREP_BACKEND_HOSTNAME || "localhost";
 
+export const BACKEND_BASE = `${PROTOCOL}://${URL}:${PORT}`;
+
 export async function downloadRecipes() {
     return axios({
         method: "get",

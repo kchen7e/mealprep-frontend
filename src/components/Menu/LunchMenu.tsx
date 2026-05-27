@@ -2,14 +2,14 @@ import React from "react";
 import { Typography, Flex } from "antd";
 import ModalMenu from "./ModalMenu";
 import Recipe from "./Recipe";
-import { Recipe as RecipeType, WeekMealSelection } from "../../static/Type";
+import { Recipe as RecipeType, RecipeRef, WeekMealSelection } from "../../static/Type";
 
 const { Title } = Typography;
 
 interface LunchMenuProps {
     day: number;
     recipes: RecipeType[];
-    selectedRecipe: string[];
+    selectedRecipe: RecipeRef[];
     setSelectedRecipes: React.Dispatch<React.SetStateAction<WeekMealSelection>>;
 }
 
@@ -41,7 +41,7 @@ function LunchMenu({
 
     function renderBody(
         recipes: RecipeType[],
-        selectedRecipe: string[],
+        selectedRecipe: RecipeRef[],
         setSelectedRecipes: React.Dispatch<React.SetStateAction<WeekMealSelection>>,
         day: number
     ) {

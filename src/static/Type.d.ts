@@ -16,6 +16,7 @@ interface Recipe {
     ingredients: string[];
     seasonality: string[];
     mealType: string[];
+    imageUrl?: string;
 }
 
 type MealType = "breakfast" | "lunch" | "dinner" | "snacks" | "dessert";
@@ -41,12 +42,17 @@ interface CountryOption {
     label: string;
 }
 
+interface RecipeRef {
+    recipeName: string;
+    displayName: string;
+}
+
 interface DayMealSelection {
-    breakfast: string[];
-    lunch: string[];
-    dinner: string[];
-    snacks: string[];
-    dessert: string[];
+    breakfast: RecipeRef[];
+    lunch: RecipeRef[];
+    dinner: RecipeRef[];
+    snacks: RecipeRef[];
+    dessert: RecipeRef[];
 }
 
 type WeekMealSelection = {
@@ -78,8 +84,13 @@ interface RegistrationResponse {
 }
 
 // Shopping list types
+interface UnitData {
+    measure: number;
+    type: string;
+}
+
 interface ShoppingListItem {
-    [ingredient: string]: number | string;
+    [ingredient: string]: UnitData;
 }
 
 interface ShoppingListResponse {
@@ -93,6 +104,7 @@ type RefreshInterval = number;
 export type {
     UserInfo,
     Recipe,
+    RecipeRef,
     MealType,
     RecipesByMeal,
     RecipeData,
@@ -102,6 +114,7 @@ export type {
     ApiResponse,
     LoginResponse,
     RegistrationResponse,
+    UnitData,
     ShoppingListItem,
     ShoppingListResponse,
     RefreshInterval,
