@@ -1,96 +1,111 @@
 # MealPrep Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and migrated to Vite.
+React 19 + TypeScript + Vite frontend for the MealPrep application — browse recipes, plan weekly meals, and generate shopping lists for local supermarkets.
 
-## Backend Requirement
+**Version:** 0.4.0 | **Node:** 22+ | **UI Library:** Ant Design 5
 
-**Important**: This frontend application requires a backend server running on `http://localhost:8080`. 
+## Overview
 
-The application expects the following API endpoints:
-- `POST /api/user/get` - User authentication
-- `POST /api/user/register` - User registration  
-- `GET /api/recipe/get/all/` - Recipe data
-- `POST /api/user/update` - Update user info
-- `POST /api/user/logout` - User logout
+A single-page application where users register, select recipes for each meal slot across a 7-day week, then generate an aggregated shopping list with ingredient quantities. Recipe images are served from the backend via MinIO. Authentication uses JWT tokens stored in cookies.
 
-If the backend server is not running, you may see 404 errors in the browser console, but the frontend will handle these gracefully.
+## Quick Start
 
-## Environment Configuration
+**Prerequisites:** Node.js 22+, backend running on `http://localhost:8080`
 
-The backend connection is configured via environment variables in `.env`:
+```bash
+npm install
+npm run dev
+```
+
+Opens at `http://localhost:5173`. The dev server hot-reloads on changes.
+
+## Environment Variables
+
+Configure in `.env` (git-ignored):
+
 ```
 VITE_MEALPREP_BACKEND_PROTOCOL=http
-VITE_MEALPREP_BACKEND_HOSTNAME=localhost  
+VITE_MEALPREP_BACKEND_HOSTNAME=localhost
 VITE_MEALPREP_BACKEND_PORT=8080
 ```
 
 ## Available Scripts
 
-In the project directory, you can run:
+| Command | Description |
+|---|---|
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Production build to `build/` |
+| `npm run preview` | Preview production build locally |
+| `npm run format` | Format source with Prettier |
 
-### `npm run dev`
+## Project Structure
 
-Runs the app in development mode using Vite.\
-Open [http://localhost:5173](http://localhost:5173) to view it in your browser.
+```
+src/
+  main.tsx                      # React entry point
+  App.tsx                       # Root component, renders Week
+  service/
+    BackendAPI.ts               # Axios HTTP client, exports BACKEND_BASE
+    RecipeService.ts            # Recipe fetch + cache logic
+    UserService.ts              # User auth + profile operations
+  components/
+    Calendar/
+      Week.tsx                  # Main orchestrator — owns selectedRecipes state
+      Day.tsx                   # Single day (breakfast/lunch/dinner slots)
+    Meal/
+      Breakfast.tsx             # Wraps BreakfastMenu
+      Lunch.tsx                 # Wraps LunchMenu
+      Dinner.tsx               # Wraps DinnerMenu
+    Menu/
+      BreakfastMenu.tsx         # Breakfast recipe grid in modal
+      LunchMenu.tsx             # Lunch recipe grid in modal
+      DinnerMenu.tsx            # Dinner recipe grid in modal
+      ModalMenu.tsx             # Reusable Ant Design modal wrapper
+      Recipe.tsx                # Selectable recipe card with image
+    Account/
+      Account.tsx               # View/edit profile, logout
+      AccountRegister.tsx       # Login/register modal
+      CountryDropDown.tsx       # Country picker with flags
+    ShoppingList/
+      ModalShoppingList.tsx     # Aggregated shopping list table
+  static/
+    Type.d.ts                   # All TypeScript interfaces and types
+    constants.ts                # Defaults, country list, config
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Component Hierarchy
 
-### `npm start`
+```
+App
+  Week                              (state: selectedRecipes, recipeData)
+    Account / AccountRegister       (state: userInfo, auth token in cookies)
+    ModalShoppingList               (fetches POST /api/shopping/get)
+    Day × 7
+      Breakfast → BreakfastMenu → ModalMenu → Recipe[]
+      Lunch     → LunchMenu     → ModalMenu → Recipe[]
+      Dinner    → DinnerMenu    → ModalMenu → Recipe[]
+```
 
-Legacy command - use `npm run dev` instead.
+## State Flow
 
-### `npm test`
+- **Week.tsx** owns the canonical `selectedRecipes: WeekMealSelection` — a map of day index to `DayMealSelection` (each meal slot holds `RecipeRef[]`).
+- Selection state is passed down through props; mutations call `setSelectedRecipes` directly.
+- **Recipe data** is cached in `localStorage` with a 5-minute refresh interval.
+- **Auth tokens** persist in cookies (`js-cookie`, 30-day expiry). On page load, `Account` reads cookies to auto-login.
+- **Shopping list** caches the last-fetched result in `sessionStorage` keyed by the current selection.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Backend API Dependency
 
-### `npm run build`
+The frontend expects these backend endpoints:
 
-Builds the app for production to the `dist` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+| Endpoint | Used By |
+|---|---|
+| `GET /api/recipe/get/all` | Recipe loading |
+| `GET /api/recipe/{name}/image` | Recipe card images |
+| `POST /api/shopping/get` | Shopping list generation |
+| `POST /api/user/register` | Account registration |
+| `POST /api/user/get` | Login |
+| `PATCH /api/user/update` | Profile updates |
+| `POST /api/user/logout` | Logout |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+All API calls have a 5-second timeout and degrade gracefully when the backend is unavailable.
