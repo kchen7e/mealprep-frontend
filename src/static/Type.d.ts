@@ -93,6 +93,16 @@ interface ShoppingListItem {
     [ingredient: string]: UnitData;
 }
 
+interface ShoppingListFoodItem {
+    foodName: string;
+    displayName: string;
+    quantity: number;
+    purchaseUnit: string;
+    foundAt: string | null;
+    originalIngredient: string;
+    unmatched: boolean;
+}
+
 interface ShoppingListResponse {
     [key: string]: any;
 }
@@ -116,6 +126,7 @@ export type {
     RegistrationResponse,
     UnitData,
     ShoppingListItem,
+    ShoppingListFoodItem,
     ShoppingListResponse,
     RefreshInterval,
 };

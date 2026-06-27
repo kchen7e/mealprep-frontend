@@ -1,9 +1,9 @@
 import _ from "lodash";
 import { useState } from "react";
-import { Button, Modal, Table, Typography, Row, Col, Empty } from "antd";
+import { Button, Modal, Table, Typography, Row, Col, Empty, Tag } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-import type { ShoppingListItem, UnitData, WeekMealSelection } from "../../static/Type";
-import { queryShoppingList } from "../../service/BackendAPI";
+import type { ShoppingListItem, ShoppingListFoodItem, UnitData, WeekMealSelection } from "../../static/Type";
+import { queryShoppingList, queryShoppingListFood } from "../../service/BackendAPI";
 
 const { Title } = Typography;
 
@@ -14,6 +14,8 @@ interface ModalShoppingListProps {
 function ModalShoppingList({ list }: ModalShoppingListProps) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [ingredientList, setIngredientList] = useState<ShoppingListItem | null>(null);
+  const [foodList, setFoodList] = useState<ShoppingListFoodItem[] | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -32,22 +34,39 @@ function ModalShoppingList({ list }: ModalShoppingListProps) {
     }
 
     if (!_.isEmpty(list)) {
+      setLoading(true);
       try {
-        const data = await queryShoppingList(list) as ShoppingListItem | null;
+        const [data, foodData] = await Promise.all([
+          queryShoppingList(list) as Promise<ShoppingListItem | null>,
+          queryShoppingListFood(list) as Promise<ShoppingListFoodItem[] | null>,
+        ]);
         if (data) {
           sessionStorage.setItem("currentList", JSON.stringify(list));
           setIngredientList(data);
         }
+        if (foodData) {
+          setFoodList(foodData);
+        }
       } catch (error) {
         console.error("Failed to get shopping list:", error);
+      } finally {
+        setLoading(false);
       }
     }
   };
 
-  interface TableDataItem {
+  interface IngredientTableItem {
     key: number;
     ingredient: string;
-    amount: string | number;
+    amount: string;
+  }
+
+  interface FoodTableItem {
+    key: number;
+    food: string;
+    quantity: string;
+    store: string;
+    unmatched: boolean;
   }
 
   function formatAmount(unit: UnitData): string {
@@ -56,7 +75,14 @@ function ModalShoppingList({ list }: ModalShoppingListProps) {
     return `${displayMeasure} ${unit.type.toLowerCase()}`;
   }
 
-  const tableData: TableDataItem[] = ingredientList
+  function formatQuantity(quantity: number, purchaseUnit: string): string {
+    const q = quantity;
+    // Round to reasonable precision
+    const displayQty = Number.isInteger(q) ? q.toString() : q.toFixed(3);
+    return `${displayQty} ${purchaseUnit.toLowerCase()}`;
+  }
+
+  const ingredientTableData: IngredientTableItem[] = ingredientList
     ? Object.keys(ingredientList).map((key, index) => ({
         key: index,
         ingredient: key,
@@ -64,7 +90,17 @@ function ModalShoppingList({ list }: ModalShoppingListProps) {
       }))
     : [];
 
-  const columns = [
+  const foodTableData: FoodTableItem[] = foodList
+    ? foodList.map((item, index) => ({
+        key: index,
+        food: item.displayName,
+        quantity: formatQuantity(item.quantity, item.purchaseUnit),
+        store: item.foundAt || "—",
+        unmatched: item.unmatched,
+      }))
+    : [];
+
+  const ingredientColumns = [
     {
       title: "Ingredient",
       dataIndex: "ingredient",
@@ -77,11 +113,40 @@ function ModalShoppingList({ list }: ModalShoppingListProps) {
     },
   ];
 
+  const foodColumns = [
+    {
+      title: "Food",
+      dataIndex: "food",
+      key: "food",
+      render: (text: string, record: FoodTableItem) => (
+        <span>
+          {text}
+          {record.unmatched && (
+            <Tag color="orange" style={{ marginLeft: 8, fontSize: 10 }}>
+              unmatched
+            </Tag>
+          )}
+        </span>
+      ),
+    },
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+    {
+      title: "Store",
+      dataIndex: "store",
+      key: "store",
+    },
+  ];
+
   return (
     <>
       <Button
         onClick={getShoppingList}
         icon={<ShoppingCartOutlined />}
+        loading={loading}
         style={{
           backgroundColor: "#FBBD08",
           borderColor: "#FBBD08",
@@ -97,13 +162,13 @@ function ModalShoppingList({ list }: ModalShoppingListProps) {
         open={modalIsOpen}
         onCancel={closeModal}
         footer={null}
-        width={850}
-        styles={{ 
-          body: { 
-            maxHeight: "70vh", 
-            overflowY: "auto", 
+        width={950}
+        styles={{
+          body: {
+            maxHeight: "70vh",
+            overflowY: "auto",
             overflowX: "hidden"
-          } 
+          }
         }}
         getContainer={() => document.getElementById("root") || document.body}
       >
@@ -112,8 +177,8 @@ function ModalShoppingList({ list }: ModalShoppingListProps) {
             <Title level={4}>You need these Ingredients</Title>
             {ingredientList ? (
               <Table
-                columns={columns}
-                dataSource={tableData}
+                columns={ingredientColumns}
+                dataSource={ingredientTableData}
                 pagination={false}
                 size="small"
               />
@@ -123,6 +188,16 @@ function ModalShoppingList({ list }: ModalShoppingListProps) {
           </Col>
           <Col span={12}>
             <Title level={4}>Recommended to buy these in your local store</Title>
+            {foodList && foodList.length > 0 ? (
+              <Table
+                columns={foodColumns}
+                dataSource={foodTableData}
+                pagination={false}
+                size="small"
+              />
+            ) : (
+              <Empty description={loading ? "Loading..." : "No Food Data"} />
+            )}
           </Col>
         </Row>
       </Modal>

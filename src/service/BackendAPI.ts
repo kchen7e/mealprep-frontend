@@ -137,6 +137,27 @@ export async function queryShoppingList(list: any) {
         });
 }
 
+export async function queryShoppingListFood(list: any) {
+    return axios({
+        method: "post",
+        url: `${BACKEND_BASE}/api/shopping/food`,
+        responseType: "json",
+        data: list,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => {
+            if (response.status === httpStatus.OK) {
+                return response.data;
+            }
+        })
+        .catch((error: any) => {
+            console.error("Failed to fetch practical shopping list:", error);
+            return null;
+        });
+}
+
 export function updateUser(userInfoUpdated: Partial<UserInfo>) {
     // Base64 encode password if provided
     const payload = {
