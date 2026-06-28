@@ -4,13 +4,16 @@
 /// <reference types="react/jsx-runtime" />
 
 declare namespace JSX {
-  interface IntrinsicElements {
-    [tag: string]: import('react').DetailedHTMLProps<import('react').HTMLAttributes<HTMLElement>, HTMLElement> & {
-      [prop: string]: any;
-    };
-  }
-  interface Element extends import('react').ReactElement {}
-  interface ElementType extends import('react').ElementType {}
+    interface IntrinsicElements {
+        [tag: string]: import("react").DetailedHTMLProps<
+            import("react").HTMLAttributes<HTMLElement>,
+            HTMLElement
+        > & {
+            [prop: string]: any;
+        };
+    }
+    type Element = import("react").ReactElement;
+    type ElementType = import("react").ElementType;
 }
 
 declare module "*.jpg";

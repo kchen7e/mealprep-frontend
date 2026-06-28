@@ -1,12 +1,12 @@
 // User-related types
 interface UserInfo {
-  userName: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password?: string;
-  country: string;
-  token: string;
+    userName: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    password?: string;
+    country: string;
+    token: string;
 }
 
 // Recipe-related types

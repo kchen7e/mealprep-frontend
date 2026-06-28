@@ -234,7 +234,7 @@ export async function logOutUser(userName: string, token: string) {
         data: { userName },
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
         },
     })
         .then((response) => {

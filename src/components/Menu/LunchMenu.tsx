@@ -13,12 +13,7 @@ interface LunchMenuProps {
     setSelectedRecipes: React.Dispatch<React.SetStateAction<WeekMealSelection>>;
 }
 
-function LunchMenu({
-    day,
-    recipes,
-    selectedRecipe,
-    setSelectedRecipes,
-}: LunchMenuProps) {
+function LunchMenu({ day, recipes, selectedRecipe, setSelectedRecipes }: LunchMenuProps) {
     const renderers = {
         header: () => renderHeader(day),
         body: () => renderBody(recipes, selectedRecipe, setSelectedRecipes, day),

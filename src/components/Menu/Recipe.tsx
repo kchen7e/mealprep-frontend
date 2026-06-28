@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Card, Image, Button, Typography } from "antd";
 import { CheckOutlined, PlusOutlined } from "@ant-design/icons";
-import type { Recipe, RecipeRef, WeekMealSelection, MealType, DayMealSelection } from "../../static/Type";
+import type {
+    Recipe,
+    RecipeRef,
+    WeekMealSelection,
+    MealType,
+    DayMealSelection,
+} from "../../static/Type";
 import { BACKEND_BASE } from "../../service/BackendAPI";
 
 const { Text } = Typography;
@@ -42,13 +48,18 @@ function Recipe({
             const newMealRecipes = [...newDaySelection[meal]]; // props.meal is used correctly
 
             if (selected) {
-                const recipeIndex = newMealRecipes.findIndex((r) => r.recipeName === recipe.recipeName);
+                const recipeIndex = newMealRecipes.findIndex(
+                    (r) => r.recipeName === recipe.recipeName
+                );
                 if (recipeIndex > -1) {
                     newMealRecipes.splice(recipeIndex, 1);
                 }
             } else {
                 if (!newMealRecipes.some((r) => r.recipeName === recipe.recipeName)) {
-                    newMealRecipes.push({ recipeName: recipe.recipeName, displayName: recipe.displayName });
+                    newMealRecipes.push({
+                        recipeName: recipe.recipeName,
+                        displayName: recipe.displayName,
+                    });
                 }
             }
 
